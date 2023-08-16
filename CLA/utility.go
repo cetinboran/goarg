@@ -35,9 +35,9 @@ func GetInputs(g *Goarg, args []string) []Input {
 								os.Exit(3)
 							}
 						}
-						inputs = append(inputs, Input{Argument: argValue, Value: "1", Error: o.Error})
+						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: "1", Error: o.Error})
 					} else {
-						inputs = append(inputs, Input{Argument: argValue, Value: args[i+1], Error: o.Error})
+						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: args[i+1], Error: o.Error})
 					}
 				}
 			}

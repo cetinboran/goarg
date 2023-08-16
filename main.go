@@ -9,17 +9,19 @@ import (
 func main() {
 	a := cla.Init()
 
-	a.SetTitle("Boran")
+	a.SetTitle("cetinboran")
 	a.SetExamples([]string{"go run main.go -h 127.0.0.1 -p 22", "go run main.go -p 192.168.1.*"})
-
 	//a.SetUsage("Blabla bla blaaaa bla")
-	a.AddOption("--host", false, "Enter your host.", []string{"Invalid"})
-	a.AddOption("-p,--port", false, "Enter your Port.", []string{"Invalid"})
-	a.AddOption("--code", true, "Open With VSCode.", []string{"Invalid"})
-	a.AutomaticUsage() // En sonda olmalı bütün option'ları alması için.
+
+	a.AddOption("--host", false, "Enter your host.", []string{"Please enter a ip not a domain."})
+	a.AddOption("-p,--port", false, "Enter your Port.", []string{"Enter less than 65535"})
+	a.AddOption("--code", true, "Open With VSCode.", []string{"Make sure that vscode is added to the path."})
+	a.AutomaticUsage() // This has to be in last
 
 	args := a.Start()
 
-	fmt.Println(args)
+	for _, i2 := range args {
+		fmt.Println(i2.Argument, i2.Value, i2.Error)
+	}
 
 }

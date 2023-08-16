@@ -6,28 +6,8 @@ import (
 	"strings"
 )
 
-type Goarg struct {
-	Title    string
-	Usage    string
-	Examples []string
-	Options  []Option
-}
-
-type Option struct {
-	PlaceHolder []string // "-s,--settings"
-	Active      bool
-	Usage       string
-	Error       []string // 1 , 2, 3
-}
-
-type Input struct {
-	Argument string
-	Value    string
-	Error    []string
-}
-
 func Init() Goarg {
-	return Goarg{}
+	return Goarg{Title: "Example Title"}
 }
 
 // Eklemeler diğer tarafa gitsin diye * kullanıyorum.
@@ -79,7 +59,7 @@ func (g *Goarg) Start() []Input {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
 	args := os.Args[1:] // All inputs
 
-	//Help(g, args)
+	Help(g, args)
 
 	CheckValidOptions(g, args)
 
