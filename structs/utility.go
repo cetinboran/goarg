@@ -77,13 +77,3 @@ func CheckValidOptions(g *Goarg, args []string) {
 	}
 
 }
-
-func arrContains(input string, arr []string) bool {
-	for _, v := range arr {
-		if v == input {
-			return true
-		}
-	}
-
-	return false
-}
