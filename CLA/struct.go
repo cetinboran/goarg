@@ -20,6 +20,12 @@ type Option struct {
 	Error       []string // 1 , 2, 3
 }
 
+type Input struct {
+	Arg   string
+	Value string
+	Error []string
+}
+
 func Init() Goarg {
 	return Goarg{}
 }
@@ -60,7 +66,7 @@ func (g *Goarg) AutomaticUsage() {
 		}
 	}
 
-	fmt.Println(theUsage)
+	g.Usage = theUsage
 }
 
 func (g *Goarg) AddOption(arg string, active bool, usage string, myError []string) {
@@ -73,9 +79,9 @@ func (g *Goarg) Start() map[string]string {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
 	args := os.Args[1:] // All inputs
 
-	CheckValidOptions(g, args)
+	Help(g, args)
 
-	g.AutomaticUsage()
+	CheckValidOptions(g, args)
 
 	return GetInputs(args)
 }

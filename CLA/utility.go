@@ -93,3 +93,19 @@ func CheckValidOptions(g *Goarg, args []string) {
 	}
 
 }
+
+func Help(g *Goarg, args []string) {
+	// Eğer arg boş ise usage ekrana yaz.
+	if len(args) == 0 {
+		fmt.Println(g.Usage)
+		os.Exit(0)
+	}
+
+	// Eğer arg'ların içinde --help veya -h var ise usage ekrana yaz.
+	if strings.Contains(strings.Join(args, " "), "--help") || strings.Contains(strings.Join(args, " "), "-h") {
+		fmt.Println(g.Usage)
+		os.Exit(0)
+	}
+
+	// Usage yazınca programı bitiriyoruz ki devam edip invalid input demesin.
+}
