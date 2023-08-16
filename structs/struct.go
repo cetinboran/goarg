@@ -1,6 +1,7 @@
 package structs
 
 import (
+	"os"
 	"strings"
 )
 
@@ -29,6 +30,8 @@ func (g *Goarg) AddOption(arg string, active bool, usage string, myError []strin
 // Kullanıcıdan alıp parse ettiğin inputları string array olarak döndür
 func (g *Goarg) Start() {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
-	// args := os.Args[1:] // All inputs
+	args := os.Args[1:] // All inputs
+
+	CheckValidOptions(g, args)
 
 }
