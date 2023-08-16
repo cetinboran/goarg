@@ -1,13 +1,16 @@
 package cla
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
 
 type Goarg struct {
-	Usage   string
-	Options []Option
+	Title    string
+	Usage    string
+	Examples []string
+	Options  []Option
 }
 
 type Option struct {
@@ -26,6 +29,40 @@ func (g *Goarg) SetUsage(usage string) {
 	g.Usage = usage
 }
 
+func (g *Goarg) SetTitle(title string) {
+	g.Title = title
+}
+
+func (g *Goarg) SetExamples(examples []string) {
+	g.Examples = examples
+}
+
+func (g *Goarg) AutomaticUsage() {
+	var theUsage string
+	theUsage += fmt.Sprintf("%v\n", g.Title)
+
+	MaxSpace := 0
+	for _, o := range g.Options {
+		if len(o.Usage) > MaxSpace {
+			MaxSpace = len(o.Usage)
+		}
+	}
+
+	for _, o := range g.Options {
+		theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+	}
+
+	// 0 Değil ise bir example vardır onu help'e ekleyelim.
+	if len(g.Examples) != 0 {
+		theUsage += fmt.Sprintf("\nExamples:\n")
+		for i, v := range g.Examples {
+			theUsage += fmt.Sprintf("%v. %v\n", i+1, v)
+		}
+	}
+
+	fmt.Println(theUsage)
+}
+
 func (g *Goarg) AddOption(arg string, active bool, usage string, myError []string) {
 	arg = strings.ReplaceAll(arg, " ", "")
 	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
@@ -37,6 +74,8 @@ func (g *Goarg) Start() map[string]string {
 	args := os.Args[1:] // All inputs
 
 	CheckValidOptions(g, args)
+
+	g.AutomaticUsage()
 
 	return GetInputs(args)
 }
