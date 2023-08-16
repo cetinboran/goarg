@@ -1,4 +1,4 @@
-package structs
+package cla
 
 import (
 	"os"
@@ -15,6 +15,10 @@ type Option struct {
 	Active      bool
 	Usage       string
 	Error       []string // 1 , 2, 3
+}
+
+func Init() Goarg {
+	return Goarg{}
 }
 
 // Eklemeler diğer tarafa gitsin diye * kullanıyorum.
