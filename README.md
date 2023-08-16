@@ -75,7 +75,6 @@ func main(){
     Examples:
     1. go run main.go -h 127.0.0.1 -p 22
     2. go run main.go -p 192.168.1.* 
-
 ```
 
 # Contact
