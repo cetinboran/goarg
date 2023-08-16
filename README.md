@@ -68,7 +68,7 @@ func main(){
 
 ```
     cetinboran
-    Enter your host. [-h --host -5]     
+    Enter your host. [-h --host]     
     Enter your Port. [-p --port]        
     Makes it faster. [--fast]
 
