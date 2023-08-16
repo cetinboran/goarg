@@ -24,31 +24,21 @@ func getOnlyOptionsFromArg(args []string) []string {
 func GetInputs(g *Goarg, args []string) []Input {
 	inputs := []Input{}
 
-	errorsMap := GetCustomErrors(g, args) // Custom yazılmış errorları çekiyorum.
-
-	for i, v := range args {
-		// -- Var ise onu input'a ata ve değerini 1 yani true yap
-		if strings.HasPrefix(v, "--") {
-			inputs = append(inputs, Input{Argument: v, Value: "1", Error: errorsMap[v]})
-		} else if !strings.HasPrefix(v, "-") && !strings.HasPrefix(v, "--") { // - ve -- yok ise bu bir inputtur ona göre değerleri ata
-			inputs = append(inputs, Input{Argument: args[i-1], Value: v, Error: errorsMap[args[i-1]]})
-		}
-	}
-
-	return inputs
-}
-
-func GetCustomErrors(g *Goarg, args []string) map[string][]string {
-	errorMap := make(map[string][]string)
-	for _, v := range getOnlyOptionsFromArg(args) {
+	for i, argValue := range args {
 		for _, o := range g.Options {
-			if strings.Contains(strings.Join(o.PlaceHolder, " "), v) {
-				errorMap[v] = o.Error
+			for _, v2 := range o.PlaceHolder {
+				if v2 == argValue {
+					if o.Active == true {
+						inputs = append(inputs, Input{Argument: argValue, Value: "1", Error: o.Error})
+					} else {
+						inputs = append(inputs, Input{Argument: argValue, Value: args[i+1], Error: o.Error})
+					}
+				}
 			}
 		}
 	}
 
-	return errorMap
+	return inputs
 }
 
 func CheckValidOptions(g *Goarg, args []string) {
@@ -65,7 +55,6 @@ func CheckValidOptions(g *Goarg, args []string) {
 		for _, o := range g.Options {
 			// Contains yerine yeni for açtın çünkü contains sıkıntı çıkarıyor.
 			for _, v2 := range o.PlaceHolder {
-				fmt.Println(v2)
 				if v != v2 {
 					check = false
 					option = v
