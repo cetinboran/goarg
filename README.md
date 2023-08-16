@@ -63,6 +63,21 @@ func main(){
     + port 22 [Enter less than 65535]
     + fast 1 [If you dont have enough ram. It can be slower than faster.]
 
++ Below you can see the auto-generated help. You can see this message with the code below.
+    + `go run .\main.go --help`
+
+```
+    cetinboran
+    Enter your host. [-h --host -5]     
+    Enter your Port. [-p --port]        
+    Makes it faster. [--fast]
+
+    Examples:
+    1. go run main.go -h 127.0.0.1 -p 22
+    2. go run main.go -p 192.168.1.* 
+
+```
+
 # Contact
 
 [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/github.svg' alt='github' height='40'>](https://github.com/cetinboran)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/linkedin.svg' alt='linkedin' height='40'>](https://www.linkedin.com/in/cetinboran-mesum/)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/instagram.svg' alt='instagram' height='40'>](https://www.instagram.com/2023an_m/)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/twitter.svg' alt='twitter' height='40'>](https://twitter.com/2023anM)  

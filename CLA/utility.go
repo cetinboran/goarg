@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cetinboran/goarg/errorHandler"
+	errorHandler "github.com/cetinboran/goarg/errorhandler"
 )
 
 func getOnlyOptionsFromArg(args []string) []string {
