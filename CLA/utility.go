@@ -29,6 +29,10 @@ func GetInputs(g *Goarg, args []string) []Input {
 			for _, v2 := range o.PlaceHolder {
 				if v2 == argValue {
 					if o.Active == true {
+						if !strings.Contains(args[i+1], "-") {
+							fmt.Println(errorHandler.GetErrors(argValue, 3))
+							os.Exit(1)
+						}
 						inputs = append(inputs, Input{Argument: argValue, Value: "1", Error: o.Error})
 					} else {
 						inputs = append(inputs, Input{Argument: argValue, Value: args[i+1], Error: o.Error})
