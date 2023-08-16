@@ -21,9 +21,9 @@ type Option struct {
 }
 
 type Input struct {
-	Arg   string
-	Value string
-	Error []string
+	Argument string
+	Value    string
+	Error    []string
 }
 
 func Init() Goarg {
@@ -75,13 +75,13 @@ func (g *Goarg) AddOption(arg string, active bool, usage string, myError []strin
 }
 
 // Kullanıcıdan alıp parse ettiğin inputları string array olarak döndür
-func (g *Goarg) Start() map[string]string {
+func (g *Goarg) Start() []Input {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
 	args := os.Args[1:] // All inputs
 
-	Help(g, args)
+	//Help(g, args)
 
 	CheckValidOptions(g, args)
 
-	return GetInputs(args)
+	return GetInputs(g, args)
 }

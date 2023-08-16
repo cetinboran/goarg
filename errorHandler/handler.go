@@ -8,6 +8,8 @@ func GetErrors(value string, errorId int) string {
 		return fmt.Sprintf("not an option: %v", value)
 	case 2:
 		return fmt.Sprintf("missing input for: %v", value)
+	case 3:
+		return fmt.Sprintf("no need input for: %v", value)
 	}
 
 	return ""
