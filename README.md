@@ -21,7 +21,7 @@
     + `Goarg.SetUsage(string)`: You can set your own usage 
     + `Goarg.AddOption(args string, active bool, usage string, error []string)`: Addes a option to the goarg for later to use.
         + args: the option name like -h --host. You must separate the setting names with (,).
-        + active: Indicates whether the setting takes input. if false it takes no input
+        + active: Indicates whether the setting takes input. if true it takes no input it's just a "1"
         + usage: this is just a usage for the option. You can see on automatic usage.
         + error: you can add errors to the option for later to use.
     + `Goarg.AutomaticUsage()`: You can activate the automatic usage. This code should be after AddOption.
