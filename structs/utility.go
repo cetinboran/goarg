@@ -8,7 +8,7 @@ import (
 	"github.com/cetinboran/goarg/errorHandler"
 )
 
-func GetOnlyOptionsFromArg(args []string) []string {
+func getOnlyOptionsFromArg(args []string) []string {
 	var onlyArgs string
 	for _, v := range args {
 		if strings.HasPrefix(v, "-") || strings.HasPrefix(v, "--") {
@@ -21,10 +21,26 @@ func GetOnlyOptionsFromArg(args []string) []string {
 	return strings.Split(onlyArgs, " ")
 }
 
+func GetInputs(args []string) map[string]string {
+
+	inputs := make(map[string]string)
+	for i, v := range args {
+		if 0 > i-1 {
+			fmt.Println("Please use this func after CheckValidOptions func.")
+		}
+
+		if !strings.HasPrefix(v, "-") {
+			inputs[v] = args[i-1]
+		}
+	}
+
+	return inputs
+}
+
 func CheckValidOptions(g *Goarg, args []string) {
 
 	// This check only for the options not for the actual inputs.
-	onlyArgs := GetOnlyOptionsFromArg(args)
+	onlyArgs := getOnlyOptionsFromArg(args)
 
 	// eğer false ise option aktifliği input gereklidir. O yüzden alt tarafta inputların doğru gelip gelmediğine bakmak için burada map oluşturdum.
 	mapOfArgs := make(map[string]bool)
