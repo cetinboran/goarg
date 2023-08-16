@@ -29,9 +29,11 @@ func GetInputs(g *Goarg, args []string) []Input {
 			for _, v2 := range o.PlaceHolder {
 				if v2 == argValue {
 					if o.Active == true {
-						if !strings.Contains(args[i+1], "-") {
-							fmt.Println(errorHandler.GetErrors(argValue, 3))
-							os.Exit(1)
+						if len(args) < i+1 {
+							if !strings.Contains(args[i+1], "-") {
+								fmt.Println(errorHandler.GetErrors(argValue, 3))
+								os.Exit(3)
+							}
 						}
 						inputs = append(inputs, Input{Argument: argValue, Value: "1", Error: o.Error})
 					} else {
@@ -46,9 +48,15 @@ func GetInputs(g *Goarg, args []string) []Input {
 }
 
 func CheckValidOptions(g *Goarg, args []string) {
-
 	// This check only for the options not for the actual inputs.
 	onlyArgs := getOnlyOptionsFromArg(args)
+
+	for _, v := range onlyArgs {
+		if strings.Count(strings.Join(onlyArgs, " "), v) != 1 {
+			fmt.Println(errorHandler.GetErrors(v, 4))
+			os.Exit(4)
+		}
+	}
 
 	// eğer false ise option aktifliği input gereklidir. O yüzden alt tarafta inputların doğru gelip gelmediğine bakmak için burada map oluşturdum.
 	mapOfArgs := make(map[string]bool)

@@ -10,6 +10,8 @@ func GetErrors(value string, errorId int) string {
 		return fmt.Sprintf("missing input for: %v", value)
 	case 3:
 		return fmt.Sprintf("no need input for: %v", value)
+	case 4:
+		return fmt.Sprintf("you don't need more than one of this option: %v", value)
 	}
 
 	return ""
