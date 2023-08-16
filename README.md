@@ -11,10 +11,11 @@
 
 ## How to Install?
 + Open your project and write the code below in the terminal. The project will be added.
-`go get github.com/cetinboran/goarg`
++ `go get github.com/cetinboran/goarg`
 
 ## How to Use?
-
++ First you need to initialize the stuct by writing `CLA := cla.Init()` 
++ + `CLA.SetTitle(sting)`: Addes the name of the project to the helper
 ```
 // Open
 
