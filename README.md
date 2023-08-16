@@ -14,7 +14,7 @@
 + `go get github.com/cetinboran/goarg`
 
 ## How to Use?
-+ First, let me explain the methods.
++ [!NOTE] First, let me explain the methods.
     + `Goarg := cla.Init()`: Initializes  the struct
     + `Goarg.SetTıtle(string)`: Addes the name of the project to the usage
     + `Goarg.SetExamples(string)`: Adds examples of how your project works to the usage.
@@ -33,6 +33,14 @@
 + Now a setup example for the project
 
 ```
+package main
+
+import (
+	"fmt"
+
+	"github.com/cetinboran/goarg/cla"
+)
+func main(){
     Goarg := cla.Inıt()
     a.SetTitle("cetinboran")
     a.SetExamples([]string{"go run main.go -h 127.0.0.1 -p 22", "go run main.go -p 192.168.1.*"})
@@ -42,4 +50,5 @@
     a.AutomaticUsage()
 
     args := a.Start()
+}
 ```
