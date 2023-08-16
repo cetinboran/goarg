@@ -1,6 +1,10 @@
 package structs
 
-import "strings"
+import (
+	"fmt"
+	"os"
+	"strings"
+)
 
 type Goarg struct {
 	Usage   string
@@ -20,7 +24,18 @@ func (g *Goarg) SetUsage(usage string) {
 }
 
 func (g *Goarg) AddOption(arg string, active bool, usage string, myError []string) {
+	arg = strings.ReplaceAll(arg, " ", "")
+
 	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
+}
+
+// Kullanıcıdan alıp parse ettiğin inputları string array olarak döndür
+func (g *Goarg) Start() {
+	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
+	args := os.Args[1:]
+
+	fmt.Println(args)
+
 }
 
 // func (x Goarg) Init() Goarg {

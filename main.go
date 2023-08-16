@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/cetinboran/goarg/structs"
 )
 
@@ -11,6 +9,6 @@ func main() {
 
 	a.SetUsage("Blabla bla blaaaa bla")
 	a.AddOption("-h,--host", false, "Enter your host.", []string{"Invalid"})
-
-	fmt.Println(a.Options)
+	a.AddOption("-p,--port", false, "Enter your Port.", []string{"Invalid"})
+	a.Start()
 }

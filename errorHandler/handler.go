@@ -1,0 +1,12 @@
+package errorHandler
+
+import "fmt"
+
+func GetErrors(value string, errorId int) string {
+	switch errorId {
+	case 1:
+		return fmt.Sprintf("not an option: %v", value)
+	}
+
+	return ""
+}
