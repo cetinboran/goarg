@@ -10,7 +10,7 @@ func Init() Goarg {
 	return Goarg{Title: "Example Title"}
 }
 
-// Eklemeler diğer tarafa gitsin diye * kullanıyorum.
+// Using *
 func (g *Goarg) SetUsage(usage string) {
 	g.Usage = usage
 }
