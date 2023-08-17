@@ -77,13 +77,12 @@ func main(){
     2. go run main.go -p 192.168.1.* 
 ```
 
-# Errors
-
+## Errors
 + there are four error messages you may encounter
-    1. not an option -> If you didn't add such a option but you are using it, this message will appear.
-    2. missing input for ... -> If you have added the option with the false activity option but forgot to add the input, this message will appear.
-    3. no need input for ... ->  If you added the option with true activity option and add the input, this message will appear. ( You don't need the input )
-    4. you don't need more than one of this option -> If you try to use the same option more than once, this message will appear.
+    + not an option -> If you didn't add such a option but you are using it, this message will appear.
+    + missing input for ... -> If you have added the option with the false activity option but forgot to add the input, this message will appear.
+    + no need input for ... ->  If you added the option with true activity option and add the input, this message will appear. ( You don't need the input )
+    + you don't need more than one of this option -> If you try to use the same option more than once, this message will appear.
 
 # Contact
 
