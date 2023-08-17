@@ -16,7 +16,7 @@
 ## How to Use?
 + First, let me explain the methods.
     + `Goarg := cla.Init()`: Initializes  the struct
-    + `Goarg.SetTıtle(string)`: Addes the name of the project to the usage
+    + `Goarg.SetTitle(string)`: Addes the name of the project to the usage
     + `Goarg.SetExamples(string)`: Adds examples of how your project works to the usage.
     + `Goarg.SetUsage(string)`: You can set your own usage 
     + `Goarg.AddOption(args string, active bool, usage string, error []string)`: Addes a option to the goarg for later to use.
@@ -24,7 +24,7 @@
         + active: Indicates whether the setting takes input. if true it takes no input it's just a "1"
         + usage: this is just a usage for the option. You can see on automatic usage.
         + error: you can add errors to the option for later to use.
-    + `Goarg.AutomaticUsage()`: You can activate the automatic usage. This code should be after AddOption.
+    + `Goarg.AutomaticUsage()`: You can activate the automatic usage. This code should be after AddOptions.
     + `Goarg.Start(string) []Input`: This is the last piece of code you need. This code returns us array of struct Input. Input has (for now) three variables.
         + Arguments: Here you can see which option is returning. 
         + Value: The value of the option that returned.
@@ -41,13 +41,13 @@ import (
 	"github.com/cetinboran/goarg/cla"
 )
 func main(){
-    Goarg := cla.Inıt()
+    Goarg := cla.Init()
     Goarg.SetTitle("cetinboran")
     Goarg.SetExamples([]string{"go run main.go -h 127.0.0.1 -p 22", "go run main.go -p 192.168.1.*"})
 
-    Goarg.AddOption("--host", false, "Enter your host.", []string{"Please enter a ip not a domain."})
+    Goarg.AddOption("-h,--host", false, "Enter your host.", []string{"Please enter a ip not a domain."})
     Goarg.AddOption("-p,--port", false, "Enter your Port.", []string{"Enter less than 65535"})
-	Goarg.AddOption("--fast", true, "Makes it faster.", []string{"If you dont have enough ram. It can be slower than faster."})
+    Goarg.AddOption("--fast", true, "Makes it faster.", []string{"If you dont have enough ram. It can be slower than faster."})
     Goarg.AutomaticUsage()
 
     args := Goarg.Start()
@@ -76,6 +76,14 @@ func main(){
     1. go run main.go -h 127.0.0.1 -p 22
     2. go run main.go -p 192.168.1.* 
 ```
+
+# Errors
+
++ there are four error messages you may encounter
+    1. not an option -> If you didn't add such a option but you are using it, this message will appear.
+    2. missing input for ... -> If you have added the option with the false activity option but forgot to add the input, this message will appear.
+    3. no need input for ... ->  If you added the option with true activity option and add the input, this message will appear. ( You don't need the input )
+    4. you don't need more than one of this option -> If you try to use the same option more than once, this message will appear.
 
 # Contact
 
