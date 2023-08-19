@@ -1,4 +1,4 @@
-package CLA
+package cla
 
 import (
 	"fmt"
