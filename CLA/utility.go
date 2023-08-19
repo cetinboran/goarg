@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	errorHandler "github.com/cetinboran/goarg/errorhandler"
+	errorHandler "github.com/cetinboran/goarg/errorHandler"
 )
 
 // Deneme
