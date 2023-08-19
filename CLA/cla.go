@@ -12,7 +12,7 @@ func Init() Goarg {
 }
 
 func ModInit() Goarg {
-	return Goarg{Title: "Mod Title", Mode: make(map[string]*Goarg), Main: false}
+	return Goarg{Title: "Mod Title", Mode: make(map[string]*Goarg), Main: false, ModeName: "ANAN"}
 }
 
 // Using *
@@ -46,6 +46,7 @@ func (g *Goarg) AddOption(arg string, active bool, usage string, myError []strin
 // mesela go run main.go mode2 -t
 // gibi birden fazla mod'un birden fazla arg'ı olucak.
 func (g *Goarg) AddMode(mode string, m *Goarg) {
+	m.ModeName = mode
 	g.Mode[mode] = m
 }
 

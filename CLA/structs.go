@@ -6,6 +6,7 @@ type Goarg struct {
 	Examples []string
 	Options  []Option
 	Mode     map[string]*Goarg
+	ModeName string
 	Main     bool
 }
 
@@ -20,4 +21,5 @@ type Input struct {
 	Argument string
 	Value    string
 	Error    []string
+	ModeName string
 }

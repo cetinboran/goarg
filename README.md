@@ -138,6 +138,10 @@ func main() {
 	}
 }
 ```   
++ 20.08.2023
+    + Now we can understand from which mode the input came from, from the return of the arguments.
+    + args.ModeName carries this information.
+    + This information is the first input value we entered in the AddMode section. Accordingly, it became easier to process incoming inputs.
 
 # Contact
 
