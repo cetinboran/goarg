@@ -8,6 +8,7 @@ import (
 	errorHandler "github.com/cetinboran/goarg/errorhandler"
 )
 
+// Deneme
 func getOnlyOptionsFromArg(args []string) []string {
 	var onlyArgs string
 	for _, v := range args {
