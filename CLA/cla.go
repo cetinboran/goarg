@@ -50,6 +50,7 @@ func (g *Goarg) AddMode(mode string, m *Goarg) {
 	g.Mode[mode] = m
 }
 
+// Deneme
 // Kullanıcıdan alıp parse ettiğin inputları string array olarak döndür
 func (g *Goarg) Start() []Input {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
