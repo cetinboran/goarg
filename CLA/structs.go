@@ -1,4 +1,4 @@
-package cla
+package CLA
 
 type Goarg struct {
 	Title    string
