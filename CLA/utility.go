@@ -118,6 +118,48 @@ func CheckValidOptions(g *Goarg, args []string) {
 
 }
 
+func CreateHelp(g *Goarg) string {
+	var theUsage string
+	theUsage += fmt.Sprintf("%v\n", g.Title)
+	theUsage += "****************************\n"
+
+	MaxSpace := 0
+	for _, o := range g.Options {
+		if len(o.Usage) > MaxSpace {
+			MaxSpace = len(o.Usage)
+		}
+	}
+
+	for _, o := range g.Options {
+		theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+	}
+
+	// 0 Değil ise bir example vardır onu help'e ekleyelim.
+	if len(g.Examples) != 0 {
+		theUsage += fmt.Sprintf("\nExamples:\n")
+		for i, v := range g.Examples {
+			theUsage += fmt.Sprintf("%v. %v\n", i+1, v)
+		}
+	}
+
+	return theUsage
+}
+
+func CreateMainHelp(g *Goarg) string {
+	var help string
+	count := 1
+
+	help += CreateHelp(g)
+	help += "\nModes\n****************************\n"
+
+	for k := range g.Mode {
+		help += fmt.Sprint(count) + ". " + k
+		count++
+	}
+
+	return help
+}
+
 func Help(g *Goarg, args []string) {
 	// Eğer arg boş ise usage ekrana yaz.
 	if len(args) == 0 {
@@ -132,4 +174,17 @@ func Help(g *Goarg, args []string) {
 	}
 
 	// Usage yazınca programı bitiriyoruz ki devam edip invalid input demesin.
+}
+
+func CheckValidMode(firstArg string, g *Goarg, firstInput string) *Goarg {
+	for k, m := range g.Mode {
+		if firstArg == k {
+			return m
+		}
+	}
+
+	fmt.Println(errorHandler.GetErrors(firstInput, 5))
+	os.Exit(5)
+
+	return nil
 }

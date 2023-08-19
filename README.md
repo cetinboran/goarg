@@ -15,7 +15,7 @@
 
 ## How to Use?
 + First, let me explain the methods.
-    + `Goarg := cla.Init()`: Initializes  the struct
+    + `Goarg := cla.Init()`: Initializes the struct
     + `Goarg.SetTitle(string)`: Addes the name of the project to the usage
     + `Goarg.SetExamples(string)`: Adds examples of how your project works to the usage.
     + `Goarg.SetUsage(string)`: You can set your own usage 
@@ -24,7 +24,7 @@
         + active: Indicates whether the setting takes input. if true it takes no input it's just a "1"
         + usage: this is just a usage for the option. You can see on automatic usage.
         + error: you can add errors to the option for later to use.
-    + `Goarg.AutomaticUsage()`: You can activate the automatic usage. This code should be after AddOptions.
+    + `Goarg.AutomaticUsage()`: You can activate the automatic usage. This code MUST be after AddOptions.
     + `Goarg.Start(string) []Input`: This is the last piece of code you need. This code returns us array of struct Input. Input has (for now) three variables.
         + Arguments: Here you can see which option is returning. 
         + Value: The value of the option that returned.
@@ -83,6 +83,58 @@ func main(){
     + missing input for ... -> If you have added the option with the false activity option but forgot to add the input, this message will appear.
     + no need input for ... ->  If you added the option with true activity option and add the input, this message will appear. ( You don't need the input )
     + you don't need more than one of this option -> If you try to use the same option more than once, this message will appear.
+
+## What's new
++ 19.08.2023
+    + now you can add mods to your project
+    + it allows you to spread the options in your project more regularly.
+    + Your project can be more organized.
+    + First, let's explain the added methods.
+        + `hello := cla.ModInit()`: Initializes the mode struct
+        + `Goarg.AddMode("helloMod", &hello)`: This method adds a mod to the main goarg struct.
+            + The first argument specifies how to call the mode, the other specifies the mod's struct
+            + You must be the address of that struct when using the other argument.
+    + The rest is the same. You can add settings, add examples, add title as in the main struct.
+    + At the end just run the start of the main struct
+    + Reminder: Automatic Usage code must be at the end.
+
+```
+package main
+
+import (
+	"fmt"
+
+	cla "github.com/cetinboran/goarg/CLA"
+)
+
+func main() {
+	Goarg := cla.Init()
+
+	Goarg.SetTitle("cetinboran")
+	Goarg.SetExamples([]string{"go run main.go -h 127.0.0.1 -p 22", "go run main.go -p 192.168.1.*"})
+
+	Goarg.AddOption("--host", false, "Enter your host.", []string{"Please enter a ip not a domain."})
+	Goarg.AddOption("-p,--port", false, "Enter your Port.", []string{"Enter less than 65535"})
+	Goarg.AddOption("--fast", true, "Makes it faster.", []string{"If you dont have enough ram. It can be slower than faster."})
+
+	hello := cla.ModInit()
+	Goarg.AddMode("helloMod", &hello)
+
+	hello.SetTitle("Hello Mod")
+	hello.SetExamples([]string{"Example 1", "Example 2"})
+	hello.AddOption("--hello", true, "Says hello", []string{"Error msg 1"})
+	hello.AddOption("-sc,--scream", false, "You can scream!", []string{"This is an error"})
+
+	hello.AutomaticUsage()
+	Goarg.AutomaticUsage()
+
+	args := Goarg.Start()
+
+	for _, arg := range args {
+		fmt.Println(arg.Argument, arg.Value, arg.Error)
+	}
+}
+```   
 
 # Contact
 

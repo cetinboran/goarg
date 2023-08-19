@@ -5,6 +5,8 @@ type Goarg struct {
 	Usage    string
 	Examples []string
 	Options  []Option
+	Mode     map[string]*Goarg
+	Main     bool
 }
 
 type Option struct {

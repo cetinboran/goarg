@@ -1,13 +1,18 @@
 package cla
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
 
+// Burada main true ise bu ana goarg'tır değil ise bir mode dur.
 func Init() Goarg {
-	return Goarg{Title: "Example Title"}
+	// map kullanabilmek için initilaze etmek lazım make ile
+	return Goarg{Title: "Example Title", Mode: make(map[string]*Goarg), Main: true}
+}
+
+func ModInit() Goarg {
+	return Goarg{Title: "Mod Title", Mode: make(map[string]*Goarg), Main: false}
 }
 
 // Using *
@@ -24,29 +29,11 @@ func (g *Goarg) SetExamples(examples []string) {
 }
 
 func (g *Goarg) AutomaticUsage() {
-	var theUsage string
-	theUsage += fmt.Sprintf("%v\n", g.Title)
-
-	MaxSpace := 0
-	for _, o := range g.Options {
-		if len(o.Usage) > MaxSpace {
-			MaxSpace = len(o.Usage)
-		}
+	if g.Main {
+		g.Usage = CreateMainHelp(g)
+	} else {
+		g.Usage = CreateHelp(g)
 	}
-
-	for _, o := range g.Options {
-		theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
-	}
-
-	// 0 Değil ise bir example vardır onu help'e ekleyelim.
-	if len(g.Examples) != 0 {
-		theUsage += fmt.Sprintf("\nExamples:\n")
-		for i, v := range g.Examples {
-			theUsage += fmt.Sprintf("%v. %v\n", i+1, v)
-		}
-	}
-
-	g.Usage = theUsage
 }
 
 func (g *Goarg) AddOption(arg string, active bool, usage string, myError []string) {
@@ -54,8 +41,12 @@ func (g *Goarg) AddOption(arg string, active bool, usage string, myError []strin
 	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
 }
 
-func (g *Goarg) AddMode(mode string) {
-
+// Mode ekliyorum
+// mesela go run main.go mode1 -h
+// mesela go run main.go mode2 -t
+// gibi birden fazla mod'un birden fazla arg'ı olucak.
+func (g *Goarg) AddMode(mode string, m *Goarg) {
+	g.Mode[mode] = m
 }
 
 // Kullanıcıdan alıp parse ettiğin inputları string array olarak döndür
@@ -63,9 +54,33 @@ func (g *Goarg) Start() []Input {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
 	args := os.Args[1:] // All inputs
 
+	// Mode için burası biraz karışık oldu sonra bakarsın düzeltmek için.
+	// Eğer ilk arg - içermiyorsa bu bir mod olmak zorundadır yoksa hatalı girilmiştir.
+	// valid mod ise o modun option'ları çalışır değil ise hata vericektir.
+	// args yok ise burayı atlasın yoksa args[0] a eriştiğimiz için hata alıyoruz.
+	if len(args) > 0 {
+		if !strings.Contains(args[0], "-") {
+			mode := CheckValidMode(args[0], g, args[0])
+
+			if mode != nil {
+				return startMode(args[1:], mode)
+			}
+		}
+	}
+
 	Help(g, args)
 
 	CheckValidOptions(g, args)
 
 	return GetInputs(g, args)
+}
+
+func startMode(args []string, m *Goarg) []Input {
+	Help(m, args)
+
+	CheckValidOptions(m, args)
+
+	// Yukarıda yaptıım mode kısmını buraya eklersem belki kaliteli sonsuz bir mode olayı yapabilirim.
+
+	return GetInputs(m, args)
 }
