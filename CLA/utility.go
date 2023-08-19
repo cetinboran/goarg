@@ -25,8 +25,6 @@ func getOnlyOptionsFromArg(args []string) []string {
 func GetInputs(g *Goarg, args []string) []Input {
 	inputs := []Input{}
 
-	fmt.Println(g.ModeName)
-
 	for i, argValue := range args {
 		for _, o := range g.Options {
 			for _, v2 := range o.PlaceHolder {
