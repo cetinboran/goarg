@@ -97,6 +97,9 @@ func main(){
     + The rest is the same. You can add settings, add examples, add title as in the main struct.
     + At the end just run the start of the main struct
     + Reminder: Automatic Usage code must be at the end.
+    + With the code on the below. We access the mode you added with AddMode() and we can use it just like we did in main goarg.
+    + `go run .\main.go helloMod`
+    + After typing the first argument you give in the addMode function to the terminal, access to the functions of that mode is provided.
 
 ```
 package main
