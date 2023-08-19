@@ -54,6 +54,10 @@ func (g *Goarg) AddOption(arg string, active bool, usage string, myError []strin
 	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
 }
 
+func (g *Goarg) AddMode(mode string) {
+
+}
+
 // Kullanıcıdan alıp parse ettiğin inputları string array olarak döndür
 func (g *Goarg) Start() []Input {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
