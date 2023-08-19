@@ -11,7 +11,7 @@
 
 ## How to Install?
 + Open your project and write the code below in the terminal. The project will be added.
-    + `go get github.com/cetinboran/goarg`
+    + `go get github.com/cetinboran/goarg@v1.0.1`
 
 ## How to Use?
 + First, let me explain the methods.
