@@ -142,6 +142,8 @@ func main() {
     + Now we can understand from which mode the input came from, from the return of the arguments.
     + args.ModeName carries this information.
     + This information is the first input value we entered in the AddMode section. Accordingly, it became easier to process incoming inputs.
+    + AddGlobalOption func added. Now, when you define a option with this function in the main goarg, this option will come to all the modes below.
+    + This code must be under AddMode() Function
 
 # Contact
 

@@ -5,29 +5,33 @@ import (
 	"strings"
 )
 
-// Burada main true ise bu ana goarg'tır değil ise bir mode dur.
+// Starts a main goarg.
 func Init() Goarg {
 	// map kullanabilmek için initilaze etmek lazım make ile
 	return Goarg{Title: "Example Title", Mode: make(map[string]*Goarg), Main: true}
 }
 
+// Starts a mode goarg.
 func ModInit() Goarg {
 	return Goarg{Title: "Mod Title", Mode: make(map[string]*Goarg), Main: false, ModeName: "ANAN"}
 }
 
-// Using *
+// You can set your own usage.
 func (g *Goarg) SetUsage(usage string) {
 	g.Usage = usage
 }
 
+// Sets the title of usage
 func (g *Goarg) SetTitle(title string) {
 	g.Title = title
 }
 
+// Adds example for your usage.
 func (g *Goarg) SetExamples(examples []string) {
 	g.Examples = examples
 }
 
+// Adds automatic helper.
 func (g *Goarg) AutomaticUsage() {
 	if g.Main {
 		g.Usage = CreateMainHelp(g)
@@ -36,15 +40,23 @@ func (g *Goarg) AutomaticUsage() {
 	}
 }
 
+// Adds option for goarg.
 func (g *Goarg) AddOption(arg string, active bool, usage string, myError []string) {
 	arg = strings.ReplaceAll(arg, " ", "")
 	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
 }
 
-// Mode ekliyorum
-// mesela go run main.go mode1 -h
-// mesela go run main.go mode2 -t
-// gibi birden fazla mod'un birden fazla arg'ı olucak.
+// Adds option to the every mode.
+func (g *Goarg) AddGlobalOption(arg string, active bool, usage string, myError []string) {
+	arg = strings.ReplaceAll(arg, " ", "")
+	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
+
+	for _, g2 := range g.Mode {
+		g2.Options = append(g2.Options, Option{strings.Split(arg, ","), active, usage, myError})
+	}
+}
+
+// Adds mode to the main goarg.
 func (g *Goarg) AddMode(mode string, m *Goarg) {
 	m.ModeName = mode
 	g.Mode[mode] = m
@@ -53,7 +65,7 @@ func (g *Goarg) AddMode(mode string, m *Goarg) {
 // git push origin v1.0.0 yaparak tagı paylaştım.
 // Version tagı oluşturdum.
 
-// Kullanıcıdan alıp parse ettiğin inputları string array olarak döndür
+// Starts the code. Return []Input array.
 func (g *Goarg) Start() []Input {
 	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
 	args := os.Args[1:] // All inputs
@@ -79,6 +91,7 @@ func (g *Goarg) Start() []Input {
 	return GetInputs(g, args)
 }
 
+// Same with the Start just use for mods.
 func startMode(args []string, m *Goarg) []Input {
 	Help(m, args)
 
