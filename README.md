@@ -144,6 +144,10 @@ func main() {
     + This information is the first input value we entered in the AddMode section. Accordingly, it became easier to process incoming inputs.
     + AddGlobalOption func added. Now, when you define a option with this function in the main goarg, this option will come to all the modes below.
     + This code must be under AddMode() Function
++ 23.08.2023
+    + Fixed 4 medium bugs.
+    + `Goarg.SetDescription(string)`: Added setdescription function. You can now write a description about your goarg.It will be added directly thanks to automatic usage.
+
 
 # Contact
 
