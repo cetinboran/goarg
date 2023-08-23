@@ -14,6 +14,12 @@ func GetErrors(value string, errorId int) string {
 		return fmt.Sprintf("you don't need more than one of this option: %v", value)
 	case 5:
 		return fmt.Sprintf("not a valid mod: %v", value)
+	case 6:
+		return fmt.Sprintf("this mod name is already in use: %v", value)
+	case 7:
+		return fmt.Sprintf("option names must start with - or --: %v", value)
+	case 8:
+		return fmt.Sprintf("this option name is being used please choose another: %v", value)
 	}
 
 	return ""

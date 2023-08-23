@@ -8,12 +8,12 @@ import (
 // Starts a main goarg.
 func Init() Goarg {
 	// map kullanabilmek için initilaze etmek lazım make ile
-	return Goarg{Title: "Example Title", Mode: make(map[string]*Goarg), Main: true}
+	return Goarg{Title: "Example Title", Mods: make(map[string]*Goarg), Main: true}
 }
 
 // Starts a mode goarg.
 func ModInit() Goarg {
-	return Goarg{Title: "Mod Title", Mode: make(map[string]*Goarg), Main: false, ModeName: "ANAN"}
+	return Goarg{Title: "Mod Title", Mods: make(map[string]*Goarg), Main: false, ModeName: "Example Name"}
 }
 
 // You can set your own usage.
@@ -31,6 +31,10 @@ func (g *Goarg) SetExamples(examples []string) {
 	g.Examples = examples
 }
 
+func (g *Goarg) SetDescription(description string) {
+	g.Description = description
+}
+
 // Adds automatic helper.
 func (g *Goarg) AutomaticUsage() {
 	if g.Main {
@@ -41,25 +45,33 @@ func (g *Goarg) AutomaticUsage() {
 }
 
 // Adds option for goarg.
-func (g *Goarg) AddOption(arg string, active bool, usage string, myError []string) {
-	arg = strings.ReplaceAll(arg, " ", "")
-	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
+func (g *Goarg) AddOption(args string, active bool, usage string, myError []string) {
+	args = strings.ReplaceAll(args, " ", "")
+	CheckOptionNames(args)
+
+	// Globaldaki sorunu burda çözersem kendi içlerine bir option name çakışması olmaz.
+	// Globalde option eklerken bu fonksiyonu kullandığı için sorun çözülür.
+
+	CheckOptionNameIsBeingUsed(g, args)
+	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, myError})
 }
 
 // Adds option to the every mode.
 func (g *Goarg) AddGlobalOption(arg string, active bool, usage string, myError []string) {
 	arg = strings.ReplaceAll(arg, " ", "")
-	g.Options = append(g.Options, Option{strings.Split(arg, ","), active, usage, myError})
+	g.AddOption(arg, active, usage, myError)
 
-	for _, g2 := range g.Mode {
-		g2.Options = append(g2.Options, Option{strings.Split(arg, ","), active, usage, myError})
+	for _, g2 := range g.Mods {
+		g2.AddOption(arg, active, usage, myError)
+		// g2.Options = append(g2.Options, Option{strings.Split(arg, ","), active, usage, myError})
 	}
 }
 
 // Adds mode to the main goarg.
 func (g *Goarg) AddMode(mode string, m *Goarg) {
+	CheckValidModeNames(g, mode)
 	m.ModeName = mode
-	g.Mode[mode] = m
+	g.Mods[mode] = m
 }
 
 // git push origin v1.0.0 yaparak tagı paylaştım.

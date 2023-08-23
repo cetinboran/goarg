@@ -1,13 +1,14 @@
 package cla
 
 type Goarg struct {
-	Title    string
-	Usage    string
-	Examples []string
-	Options  []Option
-	Mode     map[string]*Goarg
-	ModeName string
-	Main     bool
+	Title       string
+	Usage       string
+	Examples    []string
+	Description string
+	Options     []Option
+	Mods        map[string]*Goarg
+	ModeName    string
+	Main        bool
 }
 
 type Option struct {

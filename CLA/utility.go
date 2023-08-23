@@ -123,6 +123,12 @@ func CreateHelp(g *Goarg) string {
 	theUsage += fmt.Sprintf("%v\n", g.Title)
 	theUsage += "****************************\n"
 
+	if g.Description != "" {
+		theUsage += "DESCRIPTION"
+
+		theUsage += "\n" + g.Description + "\n\n"
+	}
+
 	MaxSpace := 0
 	for _, o := range g.Options {
 		if len(o.Usage) > MaxSpace {
@@ -130,13 +136,14 @@ func CreateHelp(g *Goarg) string {
 		}
 	}
 
+	theUsage += "OPTIONS:\n"
 	for _, o := range g.Options {
 		theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
 	}
 
 	// 0 Değil ise bir example vardır onu help'e ekleyelim.
 	if len(g.Examples) != 0 {
-		theUsage += fmt.Sprintf("\nExamples:\n")
+		theUsage += fmt.Sprintf("\nEXAMPLES:\n")
 		for i, v := range g.Examples {
 			theUsage += fmt.Sprintf("%v. %v\n", i+1, v)
 		}
@@ -150,11 +157,13 @@ func CreateMainHelp(g *Goarg) string {
 	count := 1
 
 	help += CreateHelp(g)
-	help += "\nModes\n****************************\n"
+	if len(g.Mods) != 0 {
+		help += "\nModes\n****************************\n"
 
-	for k := range g.Mode {
-		help += fmt.Sprint(count) + ". " + k
-		count++
+		for k := range g.Mods {
+			help += fmt.Sprint(count) + ". " + k + "\n"
+			count++
+		}
 	}
 
 	return help
@@ -177,7 +186,7 @@ func Help(g *Goarg, args []string) {
 }
 
 func CheckValidMode(firstArg string, g *Goarg, firstInput string) *Goarg {
-	for k, m := range g.Mode {
+	for k, m := range g.Mods {
 		if firstArg == k {
 			return m
 		}
@@ -187,4 +196,40 @@ func CheckValidMode(firstArg string, g *Goarg, firstInput string) *Goarg {
 	os.Exit(5)
 
 	return nil
+}
+
+func CheckValidModeNames(g *Goarg, mode string) {
+	for k := range g.Mods {
+		if k == mode {
+			fmt.Println(errorHandler.GetErrors(mode, 6))
+			os.Exit(6)
+		}
+	}
+}
+
+func CheckOptionNames(args string) {
+	argsArr := strings.Split(args, ",")
+
+	for _, v := range argsArr {
+		if !strings.HasPrefix(v, "-") {
+			fmt.Println(errorHandler.GetErrors(v, 7))
+			os.Exit(7)
+		}
+	}
+}
+
+func CheckOptionNameIsBeingUsed(g *Goarg, args string) {
+	argsArr := strings.Split(args, ",")
+
+	for _, v := range argsArr {
+		for _, o := range g.Options {
+			for _, v2 := range o.PlaceHolder {
+				if v2 == v {
+					fmt.Println(errorHandler.GetErrors(v+"\nthe name of the mod that uses this setting is: "+g.Title, 8))
+					os.Exit(8)
+				}
+			}
+		}
+	}
+
 }
