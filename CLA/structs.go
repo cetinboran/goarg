@@ -15,13 +15,11 @@ type Option struct {
 	PlaceHolder []string
 	Active      bool
 	Usage       string
-	Error       []string
 	Global      bool
 }
 
 type Input struct {
 	Argument string
-	Value    string
-	Error    []string
+	Value    interface{} // Bu string ti ordan sıkıntı çıkabilir.
 	ModeName string
 }

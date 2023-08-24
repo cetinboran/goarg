@@ -41,26 +41,34 @@ func (g *Goarg) AutomaticUsage() {
 }
 
 // Adds option for goarg.
-func (g *Goarg) AddOption(args string, active bool, usage string, myError []string) {
+func (g *Goarg) AddOption(args string, active bool, usage string) {
 	args = strings.ReplaceAll(args, " ", "")
 	CheckOptionNames(args)
 	CheckOptionNameIsBeingUsed(g, args)
 
-	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, myError, false})
+	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, false})
 }
 
 // Adds option to the every mode.
-func (g *Goarg) AddGlobalOption(args string, active bool, usage string, myError []string) {
+func (g *Goarg) AddGlobalOption(args string, active bool, usage string) {
 	args = strings.ReplaceAll(args, " ", "")
 	CheckOptionNames(args)
-	CheckOptionNameIsBeingUsed(g, args)
 
-	// g.AddOption(args, active, usage, myError)
-	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, myError, true})
+	// Burada hem modlarda hemde kendi içine böyle bir option name var mı diye bakmalı yoksa önceden olan bir option ile karışır
+	// ve fazladan input döner.
+	CheckOptionNameIsBeingUsed(g, args)
+	CheckOptionNameIsBeingUsedInModes(g, args)
+
+	/*
+		Şimdilik burayı kapadım yani global option kendisi hariç bütün modlarına o optionu ekleyecek
+		Bunu yapmamın nedeni eğer modun bir modu olursa ve aynı optionu kullanmak isterse hata veriyor karşm bu kullanılıyor diye
+		çünkü en başka tanımlanmıştı o.
+	*/
+	// g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, true})
 
 	for _, g2 := range g.Mods {
 		// g2.AddOption(args, active, usage, myError)
-		g2.Options = append(g2.Options, Option{strings.Split(args, ","), active, usage, myError, true})
+		g2.Options = append(g2.Options, Option{strings.Split(args, ","), active, usage, true})
 	}
 
 }

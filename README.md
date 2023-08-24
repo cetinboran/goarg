@@ -13,6 +13,28 @@
 + Open your project and write the code below in the terminal. The project will be added.
     + `go get github.com/cetinboran/goarg@v1.x.x`
 
+## Structs
++ I will talk about the structs that should be known here.
+    + Let's start with the **Goarg Struct** first
+    + The "goarg" struct can accept a total of 8 values: Title, Usage Examples, Description, Options, Mods, ModeName, and main.
+    + The values for Title, Usage Examples, and Description are set and used by you using the .Set functions, so there is no need to go into details about them.
+    + However, you need to have an understanding of the other fields:
+        + **Options**: All the options you add are stored in an array-like structure known as the Options struct. You can refer to where I previously explained this struct for a better understanding.
+        + **Mods**: This field is a combination of the goarg structure you're describing and the ModeName. When making a goarg.AddMode call, the first string argument you provide is used here as a key. This field becomes useful when searching for a specific mode.
+        + **ModeName**: This field is a value you set when calling the AddMode function. It holds significant importance as it helps you properly direct incoming inputs. It's returned to you after processing within the Input struct. With this field, you can easily use a switch case structure to direct incoming inputs to their respective modes.
+    + Let me explain the **Option Struct** for you.
+    + The Option struct accepts 4 values, and understanding each of them will significantly simplify your task:
+        + **PlaceHolder**: When using AddOption, the first argument you add becomes the PlaceHolder. This allows you to enter the argument through the Command Line. You can separate multiple placeholders using commas. Additionally, they must begin with a '-' or '--' to be recognized.
+        + **Active**: This value indicates whether the command line argument expects additional input. When set to false, it expects input. For instance, after typing '-p', you would need to provide another value separated by a space. When set to true, it only returns one value. You can use this as 'true' when appropriate.
+        + **Usage**: Here, you can describe the purpose of your Option. In Automatic Usage, this description will be visible.
+        + **Global**: This determines whether the option is global across all modes or specific to a single mode. This distinction can be extremely useful.
+    +  Finally let me explain **Input Struct** for you.
+    + The Input struct accepts 3 values.
+        + Argument: This field specifies the source placeholder from which the input originates. Consider a scenario where you're working on a project and receive 4 or 5 different inputs. To prevent confusion, you can organize and categorize incoming inputs based on their associated Argument labels.
+        + Value: This field represents the value sent by the user and is returned as an interface{}. It's a versatile data type that can hold different types of values, depending on the input provided by the user.
+        + ModeName: As I previously explained in the context of the goarg struct, this field indicates which mode's option the input corresponds to. It helps you associate the input with the relevant mode.
+        When we write `args := Setup.Start()`, the variable args receives the incoming values as a slice of Input structs, i.e., []Input.
+
 ## How to Use?
 + First, let me explain the methods.
     + `Goarg := cla.Init()`: Initializes the struct
@@ -147,6 +169,13 @@ func main() {
 + 23.08.2023
     + Fixed 4 medium bugs.
     + `Goarg.SetDescription(string)`: Added setdescription function. You can now write a description about your goarg.It will be added directly thanks to automatic usage.
++ 25.08.2023
+    + Now we can add mods inside mods. like 'config create'
+    + A few minor bugs fixed
+
+
+
+
 
 
 # Contact

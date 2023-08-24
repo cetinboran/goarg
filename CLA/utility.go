@@ -36,9 +36,9 @@ func GetInputs(g *Goarg, args []string) []Input {
 								os.Exit(3)
 							}
 						}
-						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: "1", Error: o.Error, ModeName: g.ModeName})
+						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: "1", ModeName: g.ModeName})
 					} else {
-						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: args[i+1], Error: o.Error, ModeName: g.ModeName})
+						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: args[i+1], ModeName: g.ModeName})
 					}
 				}
 			}
@@ -144,7 +144,6 @@ func CreateHelp(g *Goarg) string {
 	}
 
 	once := true
-
 	for _, o := range g.Options {
 		if o.Global {
 			if once {
@@ -167,18 +166,25 @@ func CreateHelp(g *Goarg) string {
 	}
 
 	if len(g.Mods) != 0 {
-		theUsage += "\nMODS"
-		theUsage += "\n----"
+
+		once := true
 
 		for k, v := range g.Mods {
+			// Eğer bir option var ise bunu yapsın yoksa geçsin tabi global olanları saymamak lazım yoksa sıkıntı çıkıyor
+			if once {
+				theUsage += "\nMods"
+				theUsage += "\n-----"
+				once = false
+			}
+
 			MaxSpace := 0
 			for _, o := range v.Options {
 				if len(o.Usage) > MaxSpace {
 					MaxSpace = len(o.Usage)
 				}
 			}
-			theUsage += "\n" + k + ":\n"
-			theUsage += "----------------------------\n"
+
+			theUsage += "\n" + k + "\n"
 			for _, o := range v.Options {
 				if !o.Global {
 					theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
@@ -187,8 +193,8 @@ func CreateHelp(g *Goarg) string {
 
 			if len(v.Mods) != 0 {
 				count := 1
-				theUsage += "\nMODS"
-				theUsage += "\n----\n"
+				theUsage += "\nMods"
+				theUsage += "\n-----\n"
 				for k2 := range v.Mods {
 					theUsage += fmt.Sprint(count) + ". " + k2 + "\n"
 					count++
@@ -263,4 +269,33 @@ func CheckOptionNameIsBeingUsed(g *Goarg, args string) {
 		}
 	}
 
+}
+
+func CheckOptionNameIsBeingUsedInModes(g *Goarg, args string) {
+	argsArr := strings.Split(args, ",")
+
+	for _, v := range argsArr {
+		for _, m := range g.Mods {
+			for _, o := range m.Options {
+				for _, v2 := range o.PlaceHolder {
+					if v2 == v {
+						fmt.Println(errorHandler.GetErrors(v+"\nthe name of the mod that uses this setting is: "+g.Title, 8))
+						os.Exit(8)
+					}
+				}
+			}
+		}
+	}
+
+}
+
+func findGlobalOptionCount(g *Goarg) int {
+	count := 0
+	for _, o := range g.Options {
+		if o.Global {
+			count++
+		}
+	}
+
+	return count
 }
