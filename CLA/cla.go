@@ -45,9 +45,6 @@ func (g *Goarg) AddOption(args string, active bool, usage string, myError []stri
 	args = strings.ReplaceAll(args, " ", "")
 	CheckOptionNames(args)
 
-	// Globaldaki sorunu burda çözersem kendi içlerine bir option name çakışması olmaz.
-	// Globalde option eklerken bu fonksiyonu kullandığı için sorun çözülür.
-
 	CheckOptionNameIsBeingUsed(g, args)
 	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, myError})
 }
@@ -101,6 +98,8 @@ func (g *Goarg) Start() []Input {
 
 // Same with the Start just use for mods.
 func startMode(args []string, m *Goarg) []Input {
+
+	// Artık mode ların içinde de modlar olabiliyor.
 	if len(args) > 0 {
 		if !strings.Contains(args[0], "-") {
 			mode := CheckValidMode(args[0], m, args[0])
