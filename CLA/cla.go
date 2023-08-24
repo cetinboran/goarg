@@ -35,13 +35,13 @@ func (g *Goarg) SetDescription(description string) {
 	g.Description = description
 }
 
+func (g *Goarg) SetSection(sectionName string) {
+	g.Sections = append(g.Sections, &Section{Value: sectionName, index: len(g.Options) - 1})
+}
+
 // Adds automatic helper.
 func (g *Goarg) AutomaticUsage() {
-	if g.Main {
-		g.Usage = CreateMainHelp(g)
-	} else {
-		g.Usage = CreateHelp(g)
-	}
+	g.Usage = CreateHelp(g)
 }
 
 // Adds option for goarg.
@@ -105,6 +105,16 @@ func (g *Goarg) Start() []Input {
 
 // Same with the Start just use for mods.
 func startMode(args []string, m *Goarg) []Input {
+	if len(args) > 0 {
+		if !strings.Contains(args[0], "-") {
+			mode := CheckValidMode(args[0], m, args[0])
+
+			if mode != nil {
+				return startMode(args[1:], mode)
+			}
+		}
+	}
+
 	Help(m, args)
 
 	CheckValidOptions(m, args)

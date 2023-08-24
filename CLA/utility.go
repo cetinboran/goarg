@@ -121,7 +121,7 @@ func CheckValidOptions(g *Goarg, args []string) {
 func CreateHelp(g *Goarg) string {
 	var theUsage string
 	theUsage += fmt.Sprintf("%v\n", g.Title)
-	theUsage += "****************************\n"
+	theUsage += "----------------------------\n"
 
 	if g.Description != "" {
 		theUsage += "DESCRIPTION"
@@ -136,37 +136,37 @@ func CreateHelp(g *Goarg) string {
 		}
 	}
 
-	theUsage += "OPTIONS:\n"
-	for _, o := range g.Options {
+	for i, o := range g.Options {
 		theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+		for _, s := range g.Sections {
+			if s.index == i {
+				theUsage += "\nSection: " + s.Value + "\n"
+				theUsage += "----------------------------\n"
+			}
+		}
 	}
 
 	// 0 Değil ise bir example vardır onu help'e ekleyelim.
 	if len(g.Examples) != 0 {
-		theUsage += fmt.Sprintf("\nEXAMPLES:\n")
+		theUsage += "\nExamples:\n"
+		theUsage += "----------------------------\n"
 		for i, v := range g.Examples {
 			theUsage += fmt.Sprintf("%v. %v\n", i+1, v)
+
 		}
 	}
 
-	return theUsage
-}
-
-func CreateMainHelp(g *Goarg) string {
-	var help string
 	count := 1
-
-	help += CreateHelp(g)
 	if len(g.Mods) != 0 {
-		help += "\nModes\n****************************\n"
+		theUsage += "\nMods:\n----------------------------\n"
 
 		for k := range g.Mods {
-			help += fmt.Sprint(count) + ". " + k + "\n"
+			theUsage += fmt.Sprint(count) + ". " + k + "\n"
 			count++
 		}
 	}
 
-	return help
+	return theUsage
 }
 
 func Help(g *Goarg, args []string) {

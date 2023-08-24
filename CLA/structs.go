@@ -5,6 +5,7 @@ type Goarg struct {
 	Usage       string
 	Examples    []string
 	Description string
+	Sections     []*Section
 	Options     []Option
 	Mods        map[string]*Goarg
 	ModeName    string
@@ -23,4 +24,9 @@ type Input struct {
 	Value    string
 	Error    []string
 	ModeName string
+}
+
+type Section struct {
+	Value string
+	index int
 }
