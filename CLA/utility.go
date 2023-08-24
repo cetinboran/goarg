@@ -169,7 +169,7 @@ func CreateHelp(g *Goarg) string {
 			}
 		}
 	}
-	// Deneme
+	
 	return theUsage
 }
 
