@@ -127,7 +127,7 @@ func CreateHelp(g *Goarg) string {
 		theUsage += "DESCRIPTION\n"
 		theUsage += "----------------------------\n"
 
-		theUsage += "\n" + g.Description + "\n\n"
+		theUsage += "\n" + g.Description + "\n"
 	}
 
 	MaxSpace := 0
@@ -143,10 +143,15 @@ func CreateHelp(g *Goarg) string {
 		}
 	}
 
-	theUsage += "\nGlobal Option\n"
-	theUsage += "----------------------------\n"
+	once := true
+
 	for _, o := range g.Options {
 		if o.Global {
+			if once {
+				theUsage += "\nGlobal Option\n"
+				theUsage += "----------------------------\n"
+				once = false
+			}
 			theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
 		}
 	}
@@ -177,6 +182,16 @@ func CreateHelp(g *Goarg) string {
 			for _, o := range v.Options {
 				if !o.Global {
 					theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+				}
+			}
+
+			if len(v.Mods) != 0 {
+				count := 1
+				theUsage += "\nMODS"
+				theUsage += "\n----\n"
+				for k2 := range v.Mods {
+					theUsage += fmt.Sprint(count) + ". " + k2 + "\n"
+					count++
 				}
 			}
 		}
