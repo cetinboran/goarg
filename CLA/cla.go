@@ -35,10 +35,6 @@ func (g *Goarg) SetDescription(description string) {
 	g.Description = description
 }
 
-func (g *Goarg) SetSection(sectionName string) {
-	g.Sections = append(g.Sections, &Section{Value: sectionName, index: len(g.Options) - 1})
-}
-
 // Adds automatic helper.
 func (g *Goarg) AutomaticUsage() {
 	g.Usage = CreateHelp(g)

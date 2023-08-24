@@ -125,6 +125,7 @@ func CreateHelp(g *Goarg) string {
 
 	if g.Description != "" {
 		theUsage += "DESCRIPTION"
+		theUsage += "----------------------------\n"
 
 		theUsage += "\n" + g.Description + "\n\n"
 	}
@@ -136,14 +137,8 @@ func CreateHelp(g *Goarg) string {
 		}
 	}
 
-	for i, o := range g.Options {
+	for _, o := range g.Options {
 		theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
-		for _, s := range g.Sections {
-			if s.index == i {
-				theUsage += "\nSection: " + s.Value + "\n"
-				theUsage += "----------------------------\n"
-			}
-		}
 	}
 
 	// 0 Değil ise bir example vardır onu help'e ekleyelim.
