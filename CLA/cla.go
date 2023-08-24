@@ -44,20 +44,25 @@ func (g *Goarg) AutomaticUsage() {
 func (g *Goarg) AddOption(args string, active bool, usage string, myError []string) {
 	args = strings.ReplaceAll(args, " ", "")
 	CheckOptionNames(args)
-
 	CheckOptionNameIsBeingUsed(g, args)
-	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, myError})
+
+	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, myError, false})
 }
 
 // Adds option to the every mode.
-func (g *Goarg) AddGlobalOption(arg string, active bool, usage string, myError []string) {
-	arg = strings.ReplaceAll(arg, " ", "")
-	g.AddOption(arg, active, usage, myError)
+func (g *Goarg) AddGlobalOption(args string, active bool, usage string, myError []string) {
+	args = strings.ReplaceAll(args, " ", "")
+	CheckOptionNames(args)
+	CheckOptionNameIsBeingUsed(g, args)
+
+	// g.AddOption(args, active, usage, myError)
+	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, myError, true})
 
 	for _, g2 := range g.Mods {
-		g2.AddOption(arg, active, usage, myError)
-		// g2.Options = append(g2.Options, Option{strings.Split(arg, ","), active, usage, myError})
+		// g2.AddOption(args, active, usage, myError)
+		g2.Options = append(g2.Options, Option{strings.Split(args, ","), active, usage, myError, true})
 	}
+
 }
 
 // Adds mode to the main goarg.

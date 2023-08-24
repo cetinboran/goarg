@@ -16,6 +16,7 @@ type Option struct {
 	Active      bool
 	Usage       string
 	Error       []string
+	Global      bool
 }
 
 type Input struct {

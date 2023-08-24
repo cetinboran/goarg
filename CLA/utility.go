@@ -124,7 +124,7 @@ func CreateHelp(g *Goarg) string {
 	theUsage += "----------------------------\n"
 
 	if g.Description != "" {
-		theUsage += "DESCRIPTION"
+		theUsage += "DESCRIPTION\n"
 		theUsage += "----------------------------\n"
 
 		theUsage += "\n" + g.Description + "\n\n"
@@ -138,7 +138,17 @@ func CreateHelp(g *Goarg) string {
 	}
 
 	for _, o := range g.Options {
-		theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+		if !o.Global {
+			theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+		}
+	}
+
+	theUsage += "\nGlobal Option\n"
+	theUsage += "----------------------------\n"
+	for _, o := range g.Options {
+		if o.Global {
+			theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+		}
 	}
 
 	// 0 Değil ise bir example vardır onu help'e ekleyelim.
@@ -165,11 +175,13 @@ func CreateHelp(g *Goarg) string {
 			theUsage += "\n" + k + ":\n"
 			theUsage += "----------------------------\n"
 			for _, o := range v.Options {
-				theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+				if !o.Global {
+					theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+				}
 			}
 		}
 	}
-	
+
 	return theUsage
 }
 
