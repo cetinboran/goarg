@@ -151,13 +151,22 @@ func CreateHelp(g *Goarg) string {
 		}
 	}
 
-	count := 1
 	if len(g.Mods) != 0 {
-		theUsage += "\nMods:\n----------------------------\n"
+		theUsage += "\nMODS"
+		theUsage += "\n----"
 
-		for k := range g.Mods {
-			theUsage += fmt.Sprint(count) + ". " + k + "\n"
-			count++
+		for k, v := range g.Mods {
+			MaxSpace := 0
+			for _, o := range v.Options {
+				if len(o.Usage) > MaxSpace {
+					MaxSpace = len(o.Usage)
+				}
+			}
+			theUsage += "\n" + k + ":\n"
+			theUsage += "----------------------------\n"
+			for _, o := range v.Options {
+				theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+			}
 		}
 	}
 
