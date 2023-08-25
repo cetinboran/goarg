@@ -145,7 +145,7 @@ func CreateHelp(g *Goarg) string {
 		theUsage += "DESCRIPTION\n"
 		theUsage += "----------------------------\n"
 
-		theUsage += g.Usage.Description + "\n\n"
+		theUsage += g.Usage.Description + "\n"
 	}
 
 	MaxSpace := 0
