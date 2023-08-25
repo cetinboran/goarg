@@ -1,14 +1,17 @@
 package cla
 
 type Goarg struct {
+	Usage    *Usage
+	Options  []Option
+	Mods     map[string]*Goarg
+	ModeName string
+}
+
+type Usage struct {
 	Title       string
-	Usage       string
-	Examples    []string
 	Description string
-	Options     []Option
-	Mods        map[string]*Goarg
-	ModeName    string
-	Main        bool
+	Examples    []string
+	Message     string
 }
 
 type Option struct {
@@ -19,7 +22,6 @@ type Option struct {
 }
 
 type Input struct {
-	Argument string
-	Value    string // Belki ilerde interface yaparsın.
+	ValueMap map[string]string
 	ModeName string
 }

@@ -16,32 +16,41 @@
 ## Structs
 + I will talk about the structs that should be known here.
     + Let's start with the **Goarg Struct** first
-    + The "goarg" struct can accept a total of 8 values: Title, Usage Examples, Description, Options, Mods, ModeName, and main.
-    + The values for Title, Usage Examples, and Description are set and used by you using the .Set functions, so there is no need to go into details about them.
-    + However, you need to have an understanding of the other fields:
-        + **Options**: All the options you add are stored in an array-like structure known as the Options struct. You can refer to where I previously explained this struct for a better understanding.
-        + **Mods**: This field is a combination of the goarg structure you're describing and the ModeName. When making a goarg.AddMode call, the first string argument you provide is used here as a key. This field becomes useful when searching for a specific mode.
-        + **ModeName**: This field is a value you set when calling the AddMode function. It holds significant importance as it helps you properly direct incoming inputs. It's returned to you after processing within the Input struct. With this field, you can easily use a switch case structure to direct incoming inputs to their respective modes.
+        + The "goarg" struct can accept a total of 4 values: Usage, Options, Mods, and ModeName.
+        + You need to have an understanding of the fields:
+            + **Usage**: The Usage struct in this field is created to hold a Usage address. It is a structure necessary to write the Usage information of your project. In the future, its contents will be explained in more detail.
+            + **Options**: All the options you add are stored in an array-like structure known as the Options struct. You can refer to where I previously explained this struct for a better understanding.
+            + **Mods**: This field is a combination of the goarg structure you're describing and the ModeName. When making a goarg.AddMode call, the first string argument you provide is used here as a key. This field becomes useful when searching for a specific mode.
+            + **ModeName**: This field is a value you set when calling the AddMode function. It holds significant importance as it helps you properly direct incoming inputs. It's returned to you after processing within the Input struct. With this field, you can easily use a switch case structure to direct incoming inputs to their respective modes.
+
+    + Let me explain the **Usage Struct** for you.
+        + The Usage struct accepts 4 values.
+            + **Title**: This title represents the name of the Goarg struct and appears at the beginning of the help message.
+            + **Description**: This is where you explain the purpose of the current goarg and it appears just below the title.
+            + **Examples**: This section is meant for explaining how Goarg works. It can include examples like using go run main.go -p <value>.
+            + **Message**: After combining all the above values to create a Help message, this variable holds that message.
+
     + Let me explain the **Option Struct** for you.
-    + The Option struct accepts 4 values, and understanding each of them will significantly simplify your task:
-        + **PlaceHolder**: When using AddOption, the first argument you add becomes the PlaceHolder. This allows you to enter the argument through the Command Line. You can separate multiple placeholders using commas. Additionally, they must begin with a '-' or '--' to be recognized.
-        + **Active**: This value indicates whether the command line argument expects additional input. When set to false, it expects input. For instance, after typing '-p', you would need to provide another value separated by a space. When set to true, it only returns one value. You can use this as 'true' when appropriate.
-        + **Usage**: Here, you can describe the purpose of your Option. In Automatic Usage, this description will be visible.
-        + **Global**: This determines whether the option is global across all modes or specific to a single mode. This distinction can be extremely useful.
+        + The Option struct accepts 4 values, and understanding each of them will significantly simplify your task:
+            + **PlaceHolder**: When using AddOption, the first argument you add becomes the PlaceHolder. This allows you to enter the argument through the Command Line. You can separate multiple placeholders using commas. Additionally, they must begin with a '-' or '--' to be recognized.
+            + **Active**: This value indicates whether the command line argument expects additional input. When set to false, it expects input. For instance, after typing '-p', you would need to provide another value separated by a space. When set to true, it only returns one value. You can use this as 'true' when appropriate.
+            + **Usage**: Here, you can describe the purpose of your Option. In Automatic Usage, this description will be visible.
+            + **Global**: This determines whether the option is global across all modes or specific to a single mode. This distinction can be extremely useful.
+
     +  Finally let me explain **Input Struct** for you.
-    + The Input struct accepts 3 values.
-        + Argument: This field specifies the source placeholder from which the input originates. Consider a scenario where you're working on a project and receive 4 or 5 different inputs. To prevent confusion, you can organize and categorize incoming inputs based on their associated Argument labels.
-        + Value: This field represents the value sent by the user and is returned as an string. It's a versatile data type that can hold different types of values, depending on the input provided by the user.
-        + ModeName: As I previously explained in the context of the goarg struct, this field indicates which mode's option the input corresponds to. It helps you associate the input with the relevant mode.
-        When we write `args := Setup.Start()`, the variable args receives the incoming values as a slice of Input structs, i.e., []Input.
+        + The Input struct accepts 2 values.
+            + ValueMap: This field holds the option placeholder as the key and the value entered by the user as a string. It is easier to access because it has a map
+            + ModeName: As I previously explained in the context of the goarg struct, this field indicates which mode's option the input corresponds to. It helps you associate the input with the relevant mode.
+            When we write `args := Setup.Start()`, the variable args receives the incoming values as a slice of Input structs, i.e., []Input.
 
 ## How to Use?
 + First, let me explain the methods.
     + `Goarg := cla.Init()`: Initializes the struct
     + `Goarg.SetTitle(string)`: Addes the name of the project to the usage
     + `Goarg.SetExamples(string)`: Adds examples of how your project works to the usage.
-    + `Goarg.SetUsage(string)`: You can set your own usage 
-    + `Goarg.AddOption(args string, active bool, usage string, error []string)`: Addes a option to the goarg for later to use.
+    + `Goarg.SetMessage(string)`: You can set your own usage message.
+    + `Goarg.SetUsage(title string, description string, examples []string)`: You can set all the value of usage in on line.
+    + `Goarg.AddOption(args string, active bool, usage string)`: Addes a option to the goarg for later to use.
         + args: the option name like -h --host. You must separate the setting names with (,).
         + active: Indicates whether the setting takes input. if true it takes no input it's just a "1"
         + usage: this is just a usage for the option. You can see on automatic usage.
@@ -62,28 +71,48 @@ import (
 
 	"github.com/cetinboran/goarg/cla"
 )
-func main(){
-    Goarg := cla.Init()
-    Goarg.SetTitle("cetinboran")
-    Goarg.SetExamples([]string{"go run main.go -h 127.0.0.1 -p 22", "go run main.go -p 192.168.1.*"})
 
-    Goarg.AddOption("-h,--host", false, "Enter your host.", []string{"Please enter a ip not a domain."})
-    Goarg.AddOption("-p,--port", false, "Enter your Port.", []string{"Enter less than 65535"})
-    Goarg.AddOption("--fast", true, "Makes it faster.", []string{"If you dont have enough ram. It can be slower than faster."})
-    Goarg.AutomaticUsage()
+func main() {
+	Goarg := cla.Init()
+	// Goarg.SetTitle("cetinboran")
+	// Goarg.SetDescription("This is a Description")
+	//Goarg.SetExamples([]string{"Example 1", "Example 2}})
 
-    args := Goarg.Start()
+	// This is equivalent to the three codes above
+	Goarg.SetUsage("cetinboran", "This is a Description", []string{"Example 1", "Example 2"})
 
-    for _, arg := range args {
-		fmt.Println(arg.Argument, arg.Value, arg.Error)
+	Goarg.AddOption("-h,--host", false, "Enter your host.")
+	Goarg.AddOption("-p,--port", false, "Enter your Port.")
+	Goarg.AddOption("--fast", true, "Makes it faster.")
+
+	NewMode := cla.ModInit()
+	NewMode.SetUsage("NewMode", "This is a Description", []string{"Example 3", "Example 4"})
+	NewMode.AddOption("-a,--aa", false, "Enter your aa.")
+	NewMode.AddOption("-b,--bb", false, "Enter your bb.")
+
+	// Main Mode Init
+	Goarg.AddMode("NewMode", &NewMode)
+
+	// Usage
+	NewMode.AutomaticUsage()
+	Goarg.AutomaticUsage()
+
+	args := Goarg.Start()
+
+	for _, arg := range args {
+		fmt.Println(arg.ValueMap, arg.ModeName)
 	}
 }
+
 ```
 + If we write the following code to the terminal `go run .\main.go -h 127.0.0.1 --port 22 --fast`.
 + we can see the result below.
-    + h 127.0.0.1 [Please enter a ip not a domain.]
-    + port 22 [Enter less than 65535]
-    + fast 1 [If you dont have enough ram. It can be slower than faster.]
+    + map[h:127.0.0.1] Main
+    + map[port:22] Main
+    + map[fast:1] Main 
++ The main text here states where the inputs are returned.Main writes that this is the first created Goarg Struct.
++ If it just wrote mode, that means there would be a Goarg mod that hasn't been added to the Main goarg struct yet.
++ If we add it to the main struct with the AddMode function, the first argument we write there will change to our ModeName. This allows us to send the inputs to the right places.
 
 + Below you can see the auto-generated help. You can see this message with the code below.
     + `go run .\main.go --help`
@@ -98,6 +127,15 @@ func main(){
     1. go run main.go -h 127.0.0.1 -p 22
     2. go run main.go -p 192.168.1.* 
 ```
+## Better Goarg Structure
++ If you intend to create a well-organized `goarg` structure, there are several important steps to keep in mind.
+    + **Main Goarg Initialization:** When initializing the main `goarg`, you can use functions like `SetTitle`, `SetDescription`, `SetExamples`, or `SetUsage` if necessary.
+    + **Adding Modes to the Main Goarg:** If you plan to add modes to the main `goarg`, you can replicate the steps you performed in the first step for each individual mode. If you wish to add multiple modes, you can stack them one after another.
+    + **Adding Modes to the Main Goarg:** You should use the `AddMode` function to add all modes to the main `goarg`.
+    + **Adding Global Options:** If you're considering adding global options, do this after adding the modes. Global options are used to apply the same options to all modes.
+    + **Generating Automatic Usage Information:** Once you complete these steps, you can call the `AutomaticUsage()` function if you want to generate automatic usage information. If you prefer to add a custom message, you can use `SetMessage` to include your own.
+    + **Starting the Main Goarg:** Lastly, you can call the `Start()` function of the main `goarg` to begin waiting for inputs.
++ These aforementioned steps are also applicable to nested modes. This means that your mode can itself contain another mode. By following the same steps, you can avoid issues.
 
 ## Errors
 + there are four error messages you may encounter
@@ -172,7 +210,8 @@ func main() {
 + 25.08.2023
     + Now we can add mods inside mods. like 'config create'
     + A few minor bugs fixed
-
+    + `GoargSetUsage(title string, description string, examples []string)`: With this code, instead of setting the title description or example one by one, you can set them all at once.
+    + Goarg struct has undergone a minor change. Instead of being kept in the title examples description goargin, a struct called Usage is opened and kept in it. Goarg only keeps the Usage struct.
 
 
 

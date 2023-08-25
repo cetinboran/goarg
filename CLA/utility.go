@@ -8,7 +8,6 @@ import (
 	errorHandler "github.com/cetinboran/goarg/errorHandler"
 )
 
-// Deneme
 func getOnlyOptionsFromArg(args []string) []string {
 	var onlyArgs string
 	for _, v := range args {
@@ -36,9 +35,22 @@ func GetInputs(g *Goarg, args []string) []Input {
 								os.Exit(3)
 							}
 						}
-						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: "1", ModeName: g.ModeName})
+						newInput := InputInit()
+						newArgValue := strings.ReplaceAll(argValue, "-", "")
+
+						newInput.ValueMap[newArgValue] = "1"
+						newInput.ModeName = g.ModeName
+						inputs = append(inputs, newInput)
+						// inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: "1", ModeName: g.ModeName})
 					} else {
-						inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: args[i+1], ModeName: g.ModeName})
+						newInput := InputInit()
+						newArgValue := strings.ReplaceAll(argValue, "-", "")
+
+						newInput.ValueMap[newArgValue] = args[i+1]
+						newInput.ModeName = g.ModeName
+						inputs = append(inputs, newInput)
+
+						// inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: args[i+1], ModeName: g.ModeName})
 					}
 				}
 			}
@@ -46,6 +58,10 @@ func GetInputs(g *Goarg, args []string) []Input {
 	}
 
 	return inputs
+}
+
+func InputInit() Input {
+	return Input{ValueMap: make(map[string]string)}
 }
 
 func CheckValidOptions(g *Goarg, args []string) {
@@ -120,14 +136,14 @@ func CheckValidOptions(g *Goarg, args []string) {
 
 func CreateHelp(g *Goarg) string {
 	var theUsage string
-	theUsage += fmt.Sprintf("%v\n", g.Title)
-	theUsage += "----------------------------\n"
+	theUsage += fmt.Sprintf("%v\n", g.Usage.Title)
+	theUsage += "----------------------------\n\n"
 
-	if g.Description != "" {
+	if g.Usage.Description != "" {
 		theUsage += "DESCRIPTION\n"
 		theUsage += "----------------------------\n"
 
-		theUsage += g.Description + "\n\n"
+		theUsage += g.Usage.Description + "\n\n"
 	}
 
 	MaxSpace := 0
@@ -156,10 +172,10 @@ func CreateHelp(g *Goarg) string {
 	}
 
 	// 0 Değil ise bir example vardır onu help'e ekleyelim.
-	if len(g.Examples) != 0 {
-		theUsage += "\nExamples:\n"
-		theUsage += "----------------------------\n"
-		for i, v := range g.Examples {
+	if len(g.Usage.Examples) != 0 {
+		theUsage += "\nExamples\n"
+		// theUsage += "----------------------------\n"
+		for i, v := range g.Usage.Examples {
 			theUsage += fmt.Sprintf("%v. %v\n", i+1, v)
 
 		}
@@ -210,13 +226,13 @@ func CreateHelp(g *Goarg) string {
 func Help(g *Goarg, args []string) {
 	// Eğer arg boş ise usage ekrana yaz.
 	if len(args) == 0 {
-		fmt.Println(g.Usage)
+		fmt.Println(g.Usage.Message)
 		os.Exit(0)
 	}
 
 	// Eğer arg'ların içinde --help veya -h var ise usage ekrana yaz.
 	if strings.Contains(strings.Join(args, " "), "--help") {
-		fmt.Println(g.Usage)
+		fmt.Println(g.Usage.Message)
 		os.Exit(0)
 	}
 
@@ -263,7 +279,7 @@ func CheckOptionNameIsBeingUsed(g *Goarg, args string) {
 		for _, o := range g.Options {
 			for _, v2 := range o.PlaceHolder {
 				if v2 == v {
-					fmt.Println(errorHandler.GetErrors(v+"\nthe name of the mod that uses this setting is: "+g.Title, 8))
+					fmt.Println(errorHandler.GetErrors(v+"\nthe name of the mod that uses this setting is: "+g.Usage.Title, 8))
 					os.Exit(8)
 				}
 			}
@@ -280,7 +296,7 @@ func CheckOptionNameIsBeingUsedInModes(g *Goarg, args string) {
 			for _, o := range m.Options {
 				for _, v2 := range o.PlaceHolder {
 					if v2 == v {
-						fmt.Println(errorHandler.GetErrors(v+"\nthe name of the mod that uses this setting is: "+g.Title, 8))
+						fmt.Println(errorHandler.GetErrors(v+"\nthe name of the mod that uses this setting is: "+g.Usage.Title, 8))
 						os.Exit(8)
 					}
 				}

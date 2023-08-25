@@ -8,36 +8,51 @@ import (
 // Starts a main goarg.
 func Init() Goarg {
 	// map kullanabilmek için initilaze etmek lazım make ile
-	return Goarg{Title: "Example Title", Mods: make(map[string]*Goarg), Main: true}
+	Goarg := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}}
+	Goarg.Usage.Title = "Main Title"
+	Goarg.ModeName = "Main"
+
+	return Goarg
 }
 
 // Starts a mode goarg.
 func ModInit() Goarg {
-	return Goarg{Title: "Mod Title", Mods: make(map[string]*Goarg), Main: false, ModeName: "Example Name"}
+	Mod := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}}
+	Mod.Usage.Title = "Mod Title"
+	Mod.ModeName = "Mode"
+	return Mod
 }
 
-// You can set your own usage.
-func (g *Goarg) SetUsage(usage string) {
-	g.Usage = usage
+// Sets the All in the usage struct. You can use your own usage help.
+func (g *Goarg) SetMessage(message string) {
+	g.Usage.Message = message
 }
 
-// Sets the title of usage
+// Sets the Title in the usage struct
 func (g *Goarg) SetTitle(title string) {
-	g.Title = title
+	g.Usage.Title = title
 }
 
-// Adds example for your usage.
+// Sets the Examples in the usage struct
 func (g *Goarg) SetExamples(examples []string) {
-	g.Examples = examples
+	g.Usage.Examples = examples
 }
 
+// Sets the description in the usage struct
 func (g *Goarg) SetDescription(description string) {
-	g.Description = description
+	g.Usage.Description = description
+}
+
+// You can set all of the usage struct by once.
+func (g *Goarg) SetUsage(title string, description string, examples []string) {
+	g.Usage.Title = title
+	g.Usage.Description = description
+	g.Usage.Examples = examples
 }
 
 // Adds automatic helper.
 func (g *Goarg) AutomaticUsage() {
-	g.Usage = CreateHelp(g)
+	g.Usage.Message = CreateHelp(g)
 }
 
 // Adds option for goarg.
