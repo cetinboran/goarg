@@ -177,17 +177,17 @@ func main() {
 	Goarg.SetTitle("cetinboran")
 	Goarg.SetExamples([]string{"go run main.go -h 127.0.0.1 -p 22", "go run main.go -p 192.168.1.*"})
 
-	Goarg.AddOption("--host", false, "Enter your host.", []string{"Please enter a ip not a domain."})
-	Goarg.AddOption("-p,--port", false, "Enter your Port.", []string{"Enter less than 65535"})
-	Goarg.AddOption("--fast", true, "Makes it faster.", []string{"If you dont have enough ram. It can be slower than faster."})
+	Goarg.AddOption("--host", false, "Enter your host.")
+	Goarg.AddOption("-p,--port", false, "Enter your Port.")
+	Goarg.AddOption("--fast", true, "Makes it faster.")
 
 	hello := cla.ModInit()
 	Goarg.AddMode("helloMod", &hello)
 
 	hello.SetTitle("Hello Mod")
 	hello.SetExamples([]string{"Example 1", "Example 2"})
-	hello.AddOption("--hello", true, "Says hello", []string{"Error msg 1"})
-	hello.AddOption("-sc,--scream", false, "You can scream!", []string{"This is an error"})
+	hello.AddOption("--hello", true, "Says hello")
+	hello.AddOption("-sc,--scream", false, "You can scream!")
 
 	hello.AutomaticUsage()
 	Goarg.AutomaticUsage()
