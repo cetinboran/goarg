@@ -20,6 +20,6 @@ type Option struct {
 
 type Input struct {
 	Argument string
-	Value    interface{} // Bu string ti ordan sıkıntı çıkabilir.
+	Value    string // Belki ilerde interface yaparsın.
 	ModeName string
 }

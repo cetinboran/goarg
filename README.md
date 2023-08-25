@@ -31,7 +31,7 @@
     +  Finally let me explain **Input Struct** for you.
     + The Input struct accepts 3 values.
         + Argument: This field specifies the source placeholder from which the input originates. Consider a scenario where you're working on a project and receive 4 or 5 different inputs. To prevent confusion, you can organize and categorize incoming inputs based on their associated Argument labels.
-        + Value: This field represents the value sent by the user and is returned as an interface{}. It's a versatile data type that can hold different types of values, depending on the input provided by the user.
+        + Value: This field represents the value sent by the user and is returned as an string. It's a versatile data type that can hold different types of values, depending on the input provided by the user.
         + ModeName: As I previously explained in the context of the goarg struct, this field indicates which mode's option the input corresponds to. It helps you associate the input with the relevant mode.
         When we write `args := Setup.Start()`, the variable args receives the incoming values as a slice of Input structs, i.e., []Input.
 
