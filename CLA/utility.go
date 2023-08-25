@@ -36,18 +36,19 @@ func GetInputs(g *Goarg, args []string) []Input {
 							}
 						}
 						newInput := InputInit()
-						newArgValue := strings.ReplaceAll(argValue, "-", "")
+						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
 
-						newInput.Argument = newArgValue
-						newInput.ValueMap[newArgValue] = "1"
+						newInput.Argument = PlaceHolder
+						newInput.Value = "1"
 						newInput.ModeName = g.ModeName
 						inputs = append(inputs, newInput)
 						// inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: "1", ModeName: g.ModeName})
 					} else {
 						newInput := InputInit()
-						newArgValue := strings.ReplaceAll(argValue, "-", "")
+						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
 
-						newInput.ValueMap[newArgValue] = args[i+1]
+						newInput.Argument = PlaceHolder
+						newInput.Value = args[i+1]
 						newInput.ModeName = g.ModeName
 						inputs = append(inputs, newInput)
 
@@ -62,7 +63,7 @@ func GetInputs(g *Goarg, args []string) []Input {
 }
 
 func InputInit() Input {
-	return Input{ValueMap: make(map[string]string)}
+	return Input{}
 }
 
 func CheckValidOptions(g *Goarg, args []string) {

@@ -23,6 +23,6 @@ type Option struct {
 
 type Input struct {
 	Argument string
-	ValueMap map[string]string
+	Value string
 	ModeName string
 }
