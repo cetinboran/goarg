@@ -172,7 +172,7 @@ func CreateHelp(g *Goarg) string {
 		for k, v := range g.Mods {
 			// Eğer bir option var ise bunu yapsın yoksa geçsin tabi global olanları saymamak lazım yoksa sıkıntı çıkıyor
 			if once {
-				theUsage += "\nMods"
+				// theUsage += "\nMods"
 				theUsage += "\n-----"
 				once = false
 			}
@@ -184,7 +184,8 @@ func CreateHelp(g *Goarg) string {
 				}
 			}
 
-			theUsage += "\n" + k + "\n"
+			theUsage += "\nMode: " + k + "\n\n"
+			theUsage += "Options:\n"
 			for _, o := range v.Options {
 				if !o.Global {
 					theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
@@ -193,8 +194,8 @@ func CreateHelp(g *Goarg) string {
 
 			if len(v.Mods) != 0 {
 				count := 1
-				theUsage += "\nMods"
-				theUsage += "\n-----\n"
+				theUsage += "\n" + v.ModeName + "'s Mods\n"
+				// theUsage += "\n-----\n"
 				for k2 := range v.Mods {
 					theUsage += fmt.Sprint(count) + ". " + k2 + "\n"
 					count++
