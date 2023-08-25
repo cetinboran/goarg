@@ -38,6 +38,7 @@ func GetInputs(g *Goarg, args []string) []Input {
 						newInput := InputInit()
 						newArgValue := strings.ReplaceAll(argValue, "-", "")
 
+						newInput.Argument = newArgValue
 						newInput.ValueMap[newArgValue] = "1"
 						newInput.ModeName = g.ModeName
 						inputs = append(inputs, newInput)
