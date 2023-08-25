@@ -110,7 +110,14 @@ func CheckValidOptions(g *Goarg, args []string) {
 	// BURADA SORUN YOK GİBİ.
 	// Eğer option active false ise ekstra bir input lazım yoksa hata versin.
 
+	// Şimdiik bunu ekledim. EĞER ANA SETUPUN İÇİNDE OPTİON YOK İSE BÜTÜN OPTİONLARA VALİT DİYOR.
+	if len(mapOfArgs) == 0 {
+		fmt.Println(errorHandler.GetErrors(args[0], 2))
+		os.Exit(2)
+	}
+
 	for i, v := range args {
+
 		if !strings.HasPrefix(v, "-") {
 			continue
 		}
@@ -145,7 +152,7 @@ func CreateHelp(g *Goarg) string {
 		theUsage += "DESCRIPTION\n"
 		theUsage += "----------------------------\n"
 
-		theUsage += g.Usage.Description + "\n"
+		theUsage += g.Usage.Description + "\n\n"
 	}
 
 	MaxSpace := 0
