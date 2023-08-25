@@ -39,7 +39,8 @@
 
     +  Finally let me explain **Input Struct** for you.
         + The Input struct accepts 2 values.
-            + ValueMap: This field holds the option placeholder as the key and the value entered by the user as a string. It is easier to access because it has a map
+            + Argument: This field holds the placeholder of the input from the user. for better input routing
+            + Value: This field holds the value of the placeholder above
             + ModeName: As I previously explained in the context of the goarg struct, this field indicates which mode's option the input corresponds to. It helps you associate the input with the relevant mode.
             When we write `args := Setup.Start()`, the variable args receives the incoming values as a slice of Input structs, i.e., []Input.
 
@@ -100,16 +101,16 @@ func main() {
 	args := Goarg.Start()
 
 	for _, arg := range args {
-		fmt.Println(arg.ValueMap, arg.ModeName)
+		fmt.Println(arg.Argument, arg.Value, arg.ModeName)
 	}
 }
 
 ```
 + If we write the following code to the terminal `go run .\main.go -h 127.0.0.1 --port 22 --fast`.
 + we can see the result below.
-    + map[h:127.0.0.1] Main
-    + map[port:22] Main
-    + map[fast:1] Main 
+    + h 127.0.0.1 Main
+    + port 22 Main
+    + fast 1 Main 
 + The main text here states where the inputs are returned.Main writes that this is the first created Goarg Struct.
 + If it just wrote mode, that means there would be a Goarg mod that hasn't been added to the Main goarg struct yet.
 + If we add it to the main struct with the AddMode function, the first argument we write there will change to our ModeName. This allows us to send the inputs to the right places.
