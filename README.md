@@ -64,7 +64,7 @@
     + This is it.
 + Now a setup example for the project
 
-```
+```golang
 package main
 
 import (
