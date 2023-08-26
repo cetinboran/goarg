@@ -162,7 +162,7 @@ func main() {
     + `go run .\main.go helloMod`
     + After typing the first argument you give in the addMode function to the terminal, access to the functions of that mode is provided.
 
-```
+```go
 package main
 
 import (
