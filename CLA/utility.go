@@ -145,7 +145,7 @@ func CheckValidOptions(g *Goarg, args []string) {
 
 func CreateHelp(g *Goarg) string {
 	var theUsage string
-	theUsage += fmt.Sprintf("%v\n", g.Usage.Title)
+	theUsage += fmt.Sprintf("\n%v\n", g.Usage.Title)
 	theUsage += "----------------------------\n\n"
 
 	if g.Usage.Description != "" {
