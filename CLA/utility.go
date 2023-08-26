@@ -149,7 +149,7 @@ func CreateHelp(g *Goarg) string {
 	theUsage += "----------------------------\n\n"
 
 	if g.Usage.Description != "" {
-		theUsage += "DESCRIPTION\n"
+		theUsage += "Description\n"
 		theUsage += "----------------------------\n"
 
 		theUsage += g.Usage.Description + "\n\n"
