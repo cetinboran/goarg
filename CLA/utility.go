@@ -203,7 +203,8 @@ func CreateHelp(g *Goarg) string {
 
 		for k, v := range g.Mods {
 			if once {
-				theUsage.WriteString("\n-----\n")
+				theUsage.WriteString("\nModes")
+				theUsage.WriteString("\n----------------------------\n")
 				once = false
 			}
 
