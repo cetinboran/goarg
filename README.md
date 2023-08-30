@@ -242,8 +242,8 @@ func main() {
 	Goarg.AddOption("-p,--port", false, "Enter your Port.")
 	Goarg.AddOption("--fast", true, "Makes it faster.")
 
-    Goarg.AddError("--host", []string{"Please Enter an ip not url"})
-    Goarg.AddError("-p,--port", []string{"Please enter between 0 - 65535"})
+    	Goarg.AddError("--host", []string{"Please Enter an ip not url"})
+    	Goarg.AddError("-p,--port", []string{"Please enter between 0 - 65535"})
 
 	hello := cla.ModInit()
 	Goarg.AddMode("helloMod", &hello)
@@ -253,8 +253,8 @@ func main() {
 	hello.AddOption("--hello", true, "Says hello")
 	hello.AddOption("-sc,--scream", false, "You can scream!")
 
-    hello.AddError("--hello", []string{"I am shy", "My voice was muted"})
-    hello.AddError("-sc,--scream", []string{"My voice was muted"})
+    	hello.AddError("--hello", []string{"I am shy", "My voice was muted"})
+	hello.AddError("-sc,--scream", []string{"My voice was muted"})
 
 	hello.AutomaticUsage()
 	Goarg.AutomaticUsage()
@@ -263,12 +263,12 @@ func main() {
 
 	for _, arg := range args {
 		if arg.Argument == "hello"{
-            // Displays the second added error and terminates the program.
-            arg.Errors.GetErrors(2, "")
-        }
-        else if arg.Argument == "sc" || arg.Argument == "scream"{
-            arg.Errors.GetErrors(1, "")
-        }
+            	// Displays the second added error and terminates the program.
+            		arg.Errors.GetErrors(2, "")
+        	}
+        	else if arg.Argument == "sc" || arg.Argument == "scream"{
+            		arg.Errors.GetErrors(1, "")
+        	}
 	}
 }
 ```
