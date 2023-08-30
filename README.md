@@ -195,7 +195,7 @@ func main() {
 	args := Goarg.Start()
 
 	for _, arg := range args {
-		fmt.Println(arg.Argument, arg.Value, arg.Error)
+		fmt.Println(arg.Argument, arg.Value, arg.ModeName)
 	}
 }
 ```   
@@ -213,6 +213,66 @@ func main() {
     + A few minor bugs fixed
     + `GoargSetUsage(title string, description string, examples []string)`: With this code, instead of setting the title description or example one by one, you can set them all at once.
     + Goarg struct has undergone a minor change. Instead of being kept in the title examples description goargin, a struct called Usage is opened and kept in it. Goarg only keeps the Usage struct.
++ 30.08.2023
+    + Now, in cla.Input returns, which represent incoming data from users, an accompanying OptionError struct will also be included.
+    + By using Goarg.AddError(argument string, errors []string), you can add errors specific to argument names to this OptionError struct or to a goarg module.
+    + We will handle all necessary processes for you and return the error to you.
+    + The OptionError struct comes with a GetErrors method. You can utilize this method to retrieve the error message for the desired option in your project, allowing you to display the error message and terminate the program.
+    + The `GetErrors` method takes 2 arguments. The first one is the number of the error you want to display on the screen. This number corresponds to the order of the Error string array that you added using `AddError`. If you want to see the first error you added, you'll write 1.
+    + The second argument is for adding something next to the displayed error on the screen. If you don't want to add anything, you can leave it as "". 
+    + An example is provided below.
+    + It might seem a hard to use, but if you look at the structure of the project I recently worked on, you'll easily understand how useful it can be. Nonetheless, I'm still looking forward to your feedback, whether it's positive or negative. [gosec](https://github.com/cetinboran/GoSec)
+
+```go
+package main
+
+import (
+	"fmt"
+
+	cla "github.com/cetinboran/goarg/CLA"
+)
+
+func main() {
+	Goarg := cla.Init()
+
+	Goarg.SetTitle("cetinboran")
+	Goarg.SetExamples([]string{"go run main.go -h 127.0.0.1 -p 22", "go run main.go -p 192.168.1.*"})
+
+	Goarg.AddOption("--host", false, "Enter your host.")
+	Goarg.AddOption("-p,--port", false, "Enter your Port.")
+	Goarg.AddOption("--fast", true, "Makes it faster.")
+
+    Goarg.AddError("--host", []string{"Please Enter an ip not url"})
+    Goarg.AddError("-p,--port", []string{"Please enter between 0 - 65535"})
+
+	hello := cla.ModInit()
+	Goarg.AddMode("helloMod", &hello)
+
+	hello.SetTitle("Hello Mod")
+	hello.SetExamples([]string{"Example 1", "Example 2"})
+	hello.AddOption("--hello", true, "Says hello")
+	hello.AddOption("-sc,--scream", false, "You can scream!")
+
+    hello.AddError("--hello", []string{"I am shy", "My voice was muted"})
+    hello.AddError("-sc,--scream", []string{"My voice was muted"})
+
+	hello.AutomaticUsage()
+	Goarg.AutomaticUsage()
+
+	args := Goarg.Start()
+
+	for _, arg := range args {
+		if arg.Argument == "hello"{
+            // Displays the second added error and terminates the program.
+            arg.Errors.GetErrors(2, "")
+        }
+        else if arg.Argument == "sc" || arg.Argument == "scream"{
+            arg.Errors.GetErrors(1, "")
+        }
+	}
+}
+```
+
 
 
 
