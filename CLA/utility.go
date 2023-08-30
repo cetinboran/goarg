@@ -173,62 +173,63 @@ func CreateHelp(g *Goarg) string {
 		theUsage.WriteString(g.Usage.Description + "\n\n")
 	}
 
-	maxSpace := calculateMaxSpace(g.Options)
-
-	writeOptionGroup(&theUsage, g.Options, false, maxSpace)
-	writeOptionGroup(&theUsage, g.Options, true, maxSpace)
-
-	writeExamples(&theUsage, g.Usage.Examples)
-
-	// Write all modes under a single "Modes" header
-	writeModeGroup(&theUsage, "Modes", g.Mods)
-
-	return theUsage.String()
-}
-
-func writeModeGroup(builder *strings.Builder, modeGroupName string, mods map[string]*Goarg) {
-	builder.WriteString(fmt.Sprintf("\n%s\n", modeGroupName))
-	builder.WriteString("-----\n")
-
-	for k, v := range mods {
-		builder.WriteString(fmt.Sprintf("-> %s\n", k))
-		writeModGroups(builder, v.Mods)
-	}
-}
-
-func writeModGroups(builder *strings.Builder, mods map[string]*Goarg) {
-	count := 1
-	for k2 := range mods {
-		builder.WriteString(fmt.Sprintf("%v. %s\n", count, k2))
-		count++
-	}
-}
-
-func calculateMaxSpace(options []Option) int {
 	maxSpace := 0
-	for _, o := range options {
+	for _, o := range g.Options {
 		if len(o.Usage) > maxSpace {
 			maxSpace = len(o.Usage)
 		}
 	}
-	return maxSpace
-}
 
-func writeOptionGroup(builder *strings.Builder, options []Option, global bool, maxSpace int) {
-	for _, o := range options {
-		if o.Global == global {
-			builder.WriteString(fmt.Sprintf("%-*s %v\n", maxSpace, o.Usage, o.PlaceHolder))
+	writeOptions := func(options []Option, global bool) {
+		for _, o := range options {
+			if o.Global == global {
+				theUsage.WriteString(fmt.Sprintf("%-*s %v\n", maxSpace, o.Usage, o.PlaceHolder))
+			}
 		}
 	}
-}
 
-func writeExamples(builder *strings.Builder, examples []string) {
-	if len(examples) != 0 {
-		builder.WriteString("\nExamples\n")
-		for i, v := range examples {
-			builder.WriteString(fmt.Sprintf("%v. %v\n", i+1, v))
+	writeOptions(g.Options, false)
+	writeOptions(g.Options, true)
+
+	if len(g.Usage.Examples) != 0 {
+		theUsage.WriteString("\nExamples\n")
+		for i, v := range g.Usage.Examples {
+			theUsage.WriteString(fmt.Sprintf("%v. %v\n", i+1, v))
 		}
 	}
+
+	if len(g.Mods) != 0 {
+		once := true
+
+		for k, v := range g.Mods {
+			if once {
+				theUsage.WriteString("\n-----\n")
+				once = false
+			}
+
+			modOptionsMaxSpace := 0
+			for _, o := range v.Options {
+				if len(o.Usage) > modOptionsMaxSpace {
+					modOptionsMaxSpace = len(o.Usage)
+				}
+			}
+
+			theUsage.WriteString(fmt.Sprintf("\nMode: %s\n\n", k))
+			theUsage.WriteString("Options:\n")
+			writeOptions(v.Options, false)
+
+			if len(v.Mods) != 0 {
+				count := 1
+				theUsage.WriteString(fmt.Sprintf("\n%s's Mods\n", v.ModeName))
+				for k2 := range v.Mods {
+					theUsage.WriteString(fmt.Sprintf("%v. %s\n", count, k2))
+					count++
+				}
+			}
+		}
+	}
+
+	return theUsage.String()
 }
 
 func Help(g *Goarg, args []string) {
