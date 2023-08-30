@@ -111,7 +111,7 @@ func (g *Goarg) AddMode(mode string, m *Goarg) {
 }
 
 // Starts the code. Return []cla.Input array.
-func (g *Goarg) Start() []Input {
+func (g *Goarg) Start() ([]Input, map[string]*OptionError) {
 	// All inputs
 	args := os.Args[1:]
 
@@ -132,7 +132,7 @@ func (g *Goarg) Start() []Input {
 }
 
 // Same with the Start just use for mods.
-func startMode(args []string, m *Goarg) []Input {
+func startMode(args []string, m *Goarg) ([]Input, map[string]*OptionError) {
 
 	if len(args) > 0 {
 		if !strings.Contains(args[0], "-") {

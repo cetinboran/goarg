@@ -8,8 +8,8 @@ import (
 	errorHandler "github.com/cetinboran/goarg/errorHandler"
 )
 
-func InputInit(argumentName string, value string, modeName string, errors *OptionError) Input {
-	return Input{Argument: argumentName, Value: value, ModeName: modeName, Errors: errors}
+func InputInit(argumentName string, value string, modeName string) Input {
+	return Input{Argument: argumentName, Value: value, ModeName: modeName}
 }
 
 // Returns only option names from user input.
@@ -27,7 +27,7 @@ func getOnlyOptionsFromArg(args []string) []string {
 }
 
 // Sets the input array
-func GetInputs(g *Goarg, args []string) []Input {
+func GetInputs(g *Goarg, args []string) ([]Input, map[string]*OptionError) {
 	inputs := []Input{}
 
 	for i, argValue := range args {
@@ -48,11 +48,11 @@ func GetInputs(g *Goarg, args []string) []Input {
 
 						// Input'u initledik ve array'e attık.
 						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
-						newInput := InputInit(PlaceHolder, "1", g.ModeName, g.Errors[v2])
+						newInput := InputInit(PlaceHolder, "1", g.ModeName)
 						inputs = append(inputs, newInput)
 					} else {
 						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
-						newInput := InputInit(PlaceHolder, args[i+1], g.ModeName, g.Errors[v2])
+						newInput := InputInit(PlaceHolder, args[i+1], g.ModeName)
 						inputs = append(inputs, newInput)
 					}
 				}
@@ -60,7 +60,7 @@ func GetInputs(g *Goarg, args []string) []Input {
 		}
 	}
 
-	return inputs
+	return inputs, g.Errors
 }
 
 // Checks Valid Options.

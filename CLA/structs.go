@@ -27,7 +27,6 @@ type Input struct {
 	Argument string
 	Value    string
 	ModeName string
-	Errors   *OptionError
 }
 
 type OptionError struct {
