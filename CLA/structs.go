@@ -21,8 +21,9 @@ type Option struct {
 	Global      bool
 }
 
+// Bu value'yi string yerine interface yapabilirsin sonra şuan çok hata çıkar
 type Input struct {
 	Argument string
-	Value string
+	Value    string
 	ModeName string
 }

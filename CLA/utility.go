@@ -28,31 +28,26 @@ func GetInputs(g *Goarg, args []string) []Input {
 		for _, o := range g.Options {
 			for _, v2 := range o.PlaceHolder {
 				if v2 == argValue {
+					// Eğer active ise input beklemeyecek.
 					if o.Active == true {
-						if len(args) < i+1 {
+						// Eğer bir i + 1 args boyutundan taşmıyorsa bir sağa bakıyoruz.
+						if len(args) > i+1 {
+							// Eğer bir sağdaki girdi - ile başlamıyorsa option değildir o zaman inputtur
+							// Hata yolluyoruz active'i true olanların inputa ihtiyacı yok diye.
 							if !strings.Contains(args[i+1], "-") {
 								fmt.Println(errorHandler.GetErrors(argValue, 3))
 								os.Exit(3)
 							}
 						}
-						newInput := InputInit()
-						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
 
-						newInput.Argument = PlaceHolder
-						newInput.Value = "1"
-						newInput.ModeName = g.ModeName
+						// Input'u initledik ve array'e attık.
+						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
+						newInput := InputInit(PlaceHolder, "1", g.ModeName)
 						inputs = append(inputs, newInput)
-						// inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: "1", ModeName: g.ModeName})
 					} else {
-						newInput := InputInit()
 						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
-
-						newInput.Argument = PlaceHolder
-						newInput.Value = args[i+1]
-						newInput.ModeName = g.ModeName
+						newInput := InputInit(PlaceHolder, args[i+1], g.ModeName)
 						inputs = append(inputs, newInput)
-
-						// inputs = append(inputs, Input{Argument: strings.ReplaceAll(argValue, "-", ""), Value: args[i+1], ModeName: g.ModeName})
 					}
 				}
 			}
@@ -62,18 +57,29 @@ func GetInputs(g *Goarg, args []string) []Input {
 	return inputs
 }
 
-func InputInit() Input {
-	return Input{}
+func InputInit(argumentName string, value string, modeName string) Input {
+	return Input{Argument: argumentName, Value: value, ModeName: modeName}
 }
 
 func CheckValidOptions(g *Goarg, args []string) {
 	// This check only for the options not for the actual inputs.
 	onlyArgs := getOnlyOptionsFromArg(args)
 
+	// Bu alttaki girilen inputtaki arg isimlerinin hepsini alıyor ve aynı olan var ise uyarı atıyor.
+	// Burada önemli olan açık ise -u ve --user aynı yere input yolluyor ancak bunları aynı olarak görmüyor. onu düzeltmelyiiz ama şuanlk bu çalışıyor.
+	var usedArgs []string
 	for _, v := range onlyArgs {
-		if strings.Count(strings.Join(onlyArgs, " "), v) != 1 {
-			fmt.Println(errorHandler.GetErrors(v, 4))
-			os.Exit(4)
+		if len(usedArgs) == 0 {
+			usedArgs = append(usedArgs, v)
+		} else {
+			for _, v2 := range usedArgs {
+				if v2 == v {
+					fmt.Println(errorHandler.GetErrors(v, 4))
+					os.Exit(4)
+				} else {
+					usedArgs = append(usedArgs, v)
+				}
+			}
 		}
 	}
 
@@ -130,6 +136,7 @@ func CheckValidOptions(g *Goarg, args []string) {
 
 		// Eğer döngüde buraya kadar geldiyse girilen option'un input alması gerekiyordur.
 		// Eğer args içinde bir sonraki eleman yok ise bir önceki option için missing input hatası atıyoruz.
+
 		if len(args) <= i+1 {
 			fmt.Println(errorHandler.GetErrors(args[i], 2))
 			os.Exit(2)

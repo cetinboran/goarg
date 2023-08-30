@@ -142,7 +142,5 @@ func startMode(args []string, m *Goarg) []Input {
 
 	CheckValidOptions(m, args)
 
-	// Yukarıda yaptıım mode kısmını buraya eklersem belki kaliteli sonsuz bir mode olayı yapabilirim.
-
 	return GetInputs(m, args)
 }
