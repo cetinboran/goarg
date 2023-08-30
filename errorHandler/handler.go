@@ -20,6 +20,9 @@ func GetErrors(value string, errorId int) string {
 		return fmt.Sprintf("option names must start with - or --: %v", value)
 	case 8:
 		return fmt.Sprintf("this option name is being used please choose another: %v", value)
+	case 9:
+		return fmt.Sprintf("This is not a option name: %v", value)
+
 	}
 
 	return ""

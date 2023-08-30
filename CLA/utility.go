@@ -8,6 +8,11 @@ import (
 	errorHandler "github.com/cetinboran/goarg/errorHandler"
 )
 
+func InputInit(argumentName string, value string, modeName string, errors *OptionError) Input {
+	return Input{Argument: argumentName, Value: value, ModeName: modeName, Errors: errors}
+}
+
+// Returns only option names from user input.
 func getOnlyOptionsFromArg(args []string) []string {
 	var onlyArgs string
 	for _, v := range args {
@@ -21,6 +26,7 @@ func getOnlyOptionsFromArg(args []string) []string {
 	return strings.Split(onlyArgs, " ")
 }
 
+// Sets the input array
 func GetInputs(g *Goarg, args []string) []Input {
 	inputs := []Input{}
 
@@ -42,11 +48,11 @@ func GetInputs(g *Goarg, args []string) []Input {
 
 						// Input'u initledik ve array'e attık.
 						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
-						newInput := InputInit(PlaceHolder, "1", g.ModeName)
+						newInput := InputInit(PlaceHolder, "1", g.ModeName, g.Errors[v2])
 						inputs = append(inputs, newInput)
 					} else {
 						PlaceHolder := strings.ReplaceAll(argValue, "-", "")
-						newInput := InputInit(PlaceHolder, args[i+1], g.ModeName)
+						newInput := InputInit(PlaceHolder, args[i+1], g.ModeName, g.Errors[v2])
 						inputs = append(inputs, newInput)
 					}
 				}
@@ -57,10 +63,7 @@ func GetInputs(g *Goarg, args []string) []Input {
 	return inputs
 }
 
-func InputInit(argumentName string, value string, modeName string) Input {
-	return Input{Argument: argumentName, Value: value, ModeName: modeName}
-}
-
+// Checks Valid Options.
 func CheckValidOptions(g *Goarg, args []string) {
 	// This check only for the options not for the actual inputs.
 	onlyArgs := getOnlyOptionsFromArg(args)
@@ -89,7 +92,9 @@ func CheckValidOptions(g *Goarg, args []string) {
 	check := true
 	var option string
 	for _, v := range onlyArgs {
+
 		for _, o := range g.Options {
+
 			// Contains yerine yeni for açtın çünkü contains sıkıntı çıkarıyor.
 			for _, v2 := range o.PlaceHolder {
 				if v != v2 {
@@ -116,7 +121,13 @@ func CheckValidOptions(g *Goarg, args []string) {
 	// BURADA SORUN YOK GİBİ.
 	// Eğer option active false ise ekstra bir input lazım yoksa hata versin.
 
-	// Şimdiik bunu ekledim. EĞER ANA SETUPUN İÇİNDE OPTİON YOK İSE BÜTÜN OPTİONLARA VALİT DİYOR.
+	// Eğer option hiç yok ise goarg içinde böyle bir input yok diyecek
+	if len(g.Options) == 0 {
+		fmt.Println(errorHandler.GetErrors(args[0], 1))
+		os.Exit(1)
+	}
+
+	// Şimdiik bunu ekledim. EĞER ANA SETUPUN İÇİNDE OPTİON YOK İSE BÜTÜN OPTİONLARA VALİD DİYOR.
 	if len(mapOfArgs) == 0 {
 		fmt.Println(errorHandler.GetErrors(args[0], 2))
 		os.Exit(2)
@@ -151,92 +162,78 @@ func CheckValidOptions(g *Goarg, args []string) {
 }
 
 func CreateHelp(g *Goarg) string {
-	var theUsage string
-	theUsage += fmt.Sprintf("\n%v\n", g.Usage.Title)
-	theUsage += "----------------------------\n\n"
+	var theUsage strings.Builder
+
+	theUsage.WriteString(fmt.Sprintf("\n%s\n", g.Usage.Title))
+	theUsage.WriteString("----------------------------\n\n")
 
 	if g.Usage.Description != "" {
-		theUsage += "Description\n"
-		theUsage += "----------------------------\n"
-
-		theUsage += g.Usage.Description + "\n\n"
+		theUsage.WriteString("Description\n")
+		theUsage.WriteString("----------------------------\n")
+		theUsage.WriteString(g.Usage.Description + "\n\n")
 	}
 
-	MaxSpace := 0
-	for _, o := range g.Options {
-		if len(o.Usage) > MaxSpace {
-			MaxSpace = len(o.Usage)
+	maxSpace := calculateMaxSpace(g.Options)
+
+	writeOptionGroup(&theUsage, g.Options, false, maxSpace)
+	writeOptionGroup(&theUsage, g.Options, true, maxSpace)
+
+	writeExamples(&theUsage, g.Usage.Examples)
+
+	writeModeGroups(&theUsage, g.Mods)
+
+	return theUsage.String()
+}
+
+func writeModeGroups(builder *strings.Builder, mods map[string]*Goarg) {
+	for k, v := range mods {
+		builder.WriteString("\nModes\n")
+		builder.WriteString("-----\n")
+		builder.WriteString(fmt.Sprintf("Mode: %s\n\n", k))
+		writeModGroups(builder, v.Mods)
+	}
+}
+
+func writeModGroups(builder *strings.Builder, mods map[string]*Goarg) {
+	count := 1
+	for k2 := range mods {
+		builder.WriteString(fmt.Sprintf("%v. %s\n", count, k2))
+		count++
+	}
+}
+
+func calculateMaxSpace(options []Option) int {
+	maxSpace := 0
+	for _, o := range options {
+		if len(o.Usage) > maxSpace {
+			maxSpace = len(o.Usage)
 		}
 	}
+	return maxSpace
+}
 
-	for _, o := range g.Options {
-		if !o.Global {
-			theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+func writeOptionGroup(builder *strings.Builder, options []Option, global bool, maxSpace int) {
+	for _, o := range options {
+		if o.Global == global {
+			builder.WriteString(fmt.Sprintf("%-*s %v\n", maxSpace, o.Usage, o.PlaceHolder))
 		}
 	}
+}
 
-	once := true
-	for _, o := range g.Options {
-		if o.Global {
-			if once {
-				theUsage += "\nGlobal Option\n"
-				theUsage += "----------------------------\n"
-				once = false
-			}
-			theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
+func writeExamples(builder *strings.Builder, examples []string) {
+	if len(examples) != 0 {
+		builder.WriteString("\nExamples\n")
+		for i, v := range examples {
+			builder.WriteString(fmt.Sprintf("%v. %v\n", i+1, v))
 		}
 	}
+}
 
-	// 0 Değil ise bir example vardır onu help'e ekleyelim.
-	if len(g.Usage.Examples) != 0 {
-		theUsage += "\nExamples\n"
-		// theUsage += "----------------------------\n"
-		for i, v := range g.Usage.Examples {
-			theUsage += fmt.Sprintf("%v. %v\n", i+1, v)
+func writeModeGroup(builder *strings.Builder, modeName string, mode *Goarg) {
+	builder.WriteString(fmt.Sprintf("\nMode: %s\n\n", modeName))
+	writeOptionGroup(builder, mode.Options, false, calculateMaxSpace(mode.Options))
 
-		}
-	}
-
-	if len(g.Mods) != 0 {
-
-		once := true
-
-		for k, v := range g.Mods {
-			// Eğer bir option var ise bunu yapsın yoksa geçsin tabi global olanları saymamak lazım yoksa sıkıntı çıkıyor
-			if once {
-				// theUsage += "\nMods"
-				theUsage += "\n-----"
-				once = false
-			}
-
-			MaxSpace := 0
-			for _, o := range v.Options {
-				if len(o.Usage) > MaxSpace {
-					MaxSpace = len(o.Usage)
-				}
-			}
-
-			theUsage += "\nMode: " + k + "\n\n"
-			theUsage += "Options:\n"
-			for _, o := range v.Options {
-				if !o.Global {
-					theUsage += fmt.Sprintf("%-*s %v\n", MaxSpace, o.Usage, o.PlaceHolder)
-				}
-			}
-
-			if len(v.Mods) != 0 {
-				count := 1
-				theUsage += "\n" + v.ModeName + "'s Mods\n"
-				// theUsage += "\n-----\n"
-				for k2 := range v.Mods {
-					theUsage += fmt.Sprint(count) + ". " + k2 + "\n"
-					count++
-				}
-			}
-		}
-	}
-
-	return theUsage
+	writeModGroups(builder, mode.Mods)
 }
 
 func Help(g *Goarg, args []string) {

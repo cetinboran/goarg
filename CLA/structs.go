@@ -5,6 +5,7 @@ type Goarg struct {
 	Options  []Option
 	Mods     map[string]*Goarg
 	ModeName string
+	Errors   map[string]*OptionError
 }
 
 type Usage struct {
@@ -26,4 +27,9 @@ type Input struct {
 	Argument string
 	Value    string
 	ModeName string
+	Errors   *OptionError
+}
+
+type OptionError struct {
+	Values []string
 }

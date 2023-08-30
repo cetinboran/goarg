@@ -1,14 +1,17 @@
 package cla
 
 import (
+	"fmt"
 	"os"
 	"strings"
+
+	"github.com/cetinboran/goarg/errorHandler"
 )
 
 // Starts a main goarg.
 func Init() Goarg {
 	// map kullanabilmek için initilaze etmek lazım make ile
-	Goarg := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}}
+	Goarg := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}, Errors: make(map[string]*OptionError)}
 	Goarg.Usage.Title = "Main Title"
 	Goarg.ModeName = "Main"
 
@@ -17,7 +20,7 @@ func Init() Goarg {
 
 // Starts a mode goarg.
 func ModInit() Goarg {
-	Mod := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}}
+	Mod := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}, Errors: make(map[string]*OptionError)}
 	Mod.Usage.Title = "Mod Title"
 	Mod.ModeName = "Mode"
 	return Mod
@@ -50,6 +53,21 @@ func (g *Goarg) SetUsage(title string, description string, examples []string) {
 	g.Usage.Examples = examples
 }
 
+// Add Errors Spesific for options.
+func (g *Goarg) AddError(argument string, Error []string) {
+	// Option eklerken ekledikleri argları buraya yazıyorlar onlara göre input structına erroları ekliyorum.
+	argument = strings.TrimSpace(argument)
+	argumentArr := strings.Split(argument, ",")
+
+	for _, v := range argumentArr {
+		if !strings.HasPrefix(v, "-") {
+			fmt.Println(errorHandler.GetErrors(v, 9))
+			os.Exit(9)
+		}
+		g.Errors[v] = OptionErrorInit(Error)
+	}
+}
+
 // Adds automatic helper.
 func (g *Goarg) AutomaticUsage() {
 	g.Usage.Message = CreateHelp(g)
@@ -69,8 +87,6 @@ func (g *Goarg) AddGlobalOption(args string, active bool, usage string) {
 	args = strings.ReplaceAll(args, " ", "")
 	CheckOptionNames(args)
 
-	// Burada hem modlarda hemde kendi içine böyle bir option name var mı diye bakmalı yoksa önceden olan bir option ile karışır
-	// ve fazladan input döner.
 	CheckOptionNameIsBeingUsed(g, args)
 	CheckOptionNameIsBeingUsedInModes(g, args)
 
@@ -82,7 +98,6 @@ func (g *Goarg) AddGlobalOption(args string, active bool, usage string) {
 	// g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, true})
 
 	for _, g2 := range g.Mods {
-		// g2.AddOption(args, active, usage, myError)
 		g2.Options = append(g2.Options, Option{strings.Split(args, ","), active, usage, true})
 	}
 
@@ -95,18 +110,11 @@ func (g *Goarg) AddMode(mode string, m *Goarg) {
 	g.Mods[mode] = m
 }
 
-// git push origin v1.0.0 yaparak tagı paylaştım.
-// Version tagı oluşturdum.
-
-// Starts the code. Return []Input array.
+// Starts the code. Return []cla.Input array.
 func (g *Goarg) Start() []Input {
-	// Bütün boşluklar silinip geliyor buraya boşluklarla uğraşmana gerek yok.
-	args := os.Args[1:] // All inputs
+	// All inputs
+	args := os.Args[1:]
 
-	// Mode için burası biraz karışık oldu sonra bakarsın düzeltmek için.
-	// Eğer ilk arg - içermiyorsa bu bir mod olmak zorundadır yoksa hatalı girilmiştir.
-	// valid mod ise o modun option'ları çalışır değil ise hata vericektir.
-	// args yok ise burayı atlasın yoksa args[0] a eriştiğimiz için hata alıyoruz.
 	if len(args) > 0 {
 		if !strings.Contains(args[0], "-") {
 			mode := CheckValidMode(args[0], g, args[0])
@@ -118,7 +126,6 @@ func (g *Goarg) Start() []Input {
 	}
 
 	Help(g, args)
-
 	CheckValidOptions(g, args)
 
 	return GetInputs(g, args)
@@ -127,7 +134,6 @@ func (g *Goarg) Start() []Input {
 // Same with the Start just use for mods.
 func startMode(args []string, m *Goarg) []Input {
 
-	// Artık mode ların içinde de modlar olabiliyor.
 	if len(args) > 0 {
 		if !strings.Contains(args[0], "-") {
 			mode := CheckValidMode(args[0], m, args[0])
@@ -139,7 +145,6 @@ func startMode(args []string, m *Goarg) []Input {
 	}
 
 	Help(m, args)
-
 	CheckValidOptions(m, args)
 
 	return GetInputs(m, args)
