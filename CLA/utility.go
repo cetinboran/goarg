@@ -180,16 +180,18 @@ func CreateHelp(g *Goarg) string {
 
 	writeExamples(&theUsage, g.Usage.Examples)
 
-	writeModeGroups(&theUsage, g.Mods)
+	// Write all modes under a single "Modes" header
+	writeModeGroup(&theUsage, "Modes", g.Mods)
 
 	return theUsage.String()
 }
 
-func writeModeGroups(builder *strings.Builder, mods map[string]*Goarg) {
+func writeModeGroup(builder *strings.Builder, modeGroupName string, mods map[string]*Goarg) {
+	builder.WriteString(fmt.Sprintf("\n%s\n", modeGroupName))
+	builder.WriteString("-----\n")
+
 	for k, v := range mods {
-		builder.WriteString("\nModes\n")
-		builder.WriteString("-----\n")
-		builder.WriteString(fmt.Sprintf("Mode: %s\n\n", k))
+		builder.WriteString(fmt.Sprintf("-> %s\n", k))
 		writeModGroups(builder, v.Mods)
 	}
 }
@@ -227,13 +229,6 @@ func writeExamples(builder *strings.Builder, examples []string) {
 			builder.WriteString(fmt.Sprintf("%v. %v\n", i+1, v))
 		}
 	}
-}
-
-func writeModeGroup(builder *strings.Builder, modeName string, mode *Goarg) {
-	builder.WriteString(fmt.Sprintf("\nMode: %s\n\n", modeName))
-	writeOptionGroup(builder, mode.Options, false, calculateMaxSpace(mode.Options))
-
-	writeModGroups(builder, mode.Mods)
 }
 
 func Help(g *Goarg, args []string) {
