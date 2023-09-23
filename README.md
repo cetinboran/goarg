@@ -262,10 +262,9 @@ func main() {
     errors["--hello"].GetErrors(1) // => I am shy.
 }
 ```
-
-
-
-
++ 23.09.2023
+    + `Goarg.AddOptionTitle(string)` Added.
+    + This can be used to add a title to the beginning of your options in the usage section to make them more organized.
 
 
 # Contact

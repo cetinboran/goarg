@@ -11,46 +11,57 @@ import (
 // Starts a main goarg.
 func Init() Goarg {
 	// map kullanabilmek için initilaze etmek lazım make ile
-	Goarg := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}, Errors: make(map[string]*OptionError)}
-	Goarg.Usage.Title = "Main Title"
-	Goarg.ModeName = "Main"
+	Goarg := Goarg{mods: make(map[string]*Goarg), usage: &Usage{}, errors: make(map[string]*OptionError)}
+	Goarg.usage.Title = "Main Title"
+	Goarg.modeName = "Main"
 
 	return Goarg
 }
 
 // Starts a mode goarg.
 func ModInit() Goarg {
-	Mod := Goarg{Mods: make(map[string]*Goarg), Usage: &Usage{}, Errors: make(map[string]*OptionError)}
-	Mod.Usage.Title = "Mod Title"
-	Mod.ModeName = "Mode"
+	Mod := Goarg{mods: make(map[string]*Goarg), usage: &Usage{}, errors: make(map[string]*OptionError)}
+	Mod.usage.Title = "Mod Title"
+	Mod.modeName = "Mode"
 	return Mod
 }
 
 // Sets the All in the usage struct. You can use your own usage help.
 func (g *Goarg) SetMessage(message string) {
-	g.Usage.Message = message
+	g.usage.Message = message
 }
 
 // Sets the Title in the usage struct
 func (g *Goarg) SetTitle(title string) {
-	g.Usage.Title = title
+	g.usage.Title = title
 }
 
 // Sets the Examples in the usage struct
 func (g *Goarg) SetExamples(examples []string) {
-	g.Usage.Examples = examples
+	g.usage.Examples = examples
 }
 
 // Sets the description in the usage struct
 func (g *Goarg) SetDescription(description string) {
-	g.Usage.Description = description
+	g.usage.Description = description
+}
+
+func (g *Goarg) AddOptionTitle(title string) {
+	length := len(g.options)
+
+	if length != 0 {
+		lastOption := g.options[length-1]
+		lastOption.title = title
+	} else {
+		g.usage.mainTitle = title
+	}
 }
 
 // You can set all of the usage struct by once.
 func (g *Goarg) SetUsage(title string, description string, examples []string) {
-	g.Usage.Title = title
-	g.Usage.Description = description
-	g.Usage.Examples = examples
+	g.usage.Title = title
+	g.usage.Description = description
+	g.usage.Examples = examples
 }
 
 // Add Errors Spesific for options.
@@ -64,13 +75,13 @@ func (g *Goarg) AddError(argument string, Error []string) {
 			fmt.Println(errorHandler.GetErrors(v, 9))
 			os.Exit(9)
 		}
-		g.Errors[v] = OptionErrorInit(Error)
+		g.errors[v] = OptionErrorInit(Error)
 	}
 }
 
 // Adds automatic helper.
 func (g *Goarg) AutomaticUsage() {
-	g.Usage.Message = CreateHelp(g)
+	g.usage.Message = CreateHelp(g)
 }
 
 // Adds option for goarg.
@@ -79,7 +90,7 @@ func (g *Goarg) AddOption(args string, active bool, usage string) {
 	CheckOptionNames(args)
 	CheckOptionNameIsBeingUsed(g, args)
 
-	g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, false})
+	g.options = append(g.options, &Option{strings.Split(args, ","), active, usage, false, ""})
 }
 
 // Adds option to the every mode.
@@ -97,8 +108,8 @@ func (g *Goarg) AddGlobalOption(args string, active bool, usage string) {
 	*/
 	// g.Options = append(g.Options, Option{strings.Split(args, ","), active, usage, true})
 
-	for _, g2 := range g.Mods {
-		g2.Options = append(g2.Options, Option{strings.Split(args, ","), active, usage, true})
+	for _, g2 := range g.mods {
+		g2.options = append(g2.options, &Option{strings.Split(args, ","), active, usage, true, ""})
 	}
 
 }
@@ -106,8 +117,8 @@ func (g *Goarg) AddGlobalOption(args string, active bool, usage string) {
 // Adds mode to the main goarg.
 func (g *Goarg) AddMode(mode string, m *Goarg) {
 	CheckValidModeNames(g, mode)
-	m.ModeName = mode
-	g.Mods[mode] = m
+	m.modeName = mode
+	g.mods[mode] = m
 }
 
 // Starts the code. Return []cla.Input array.
