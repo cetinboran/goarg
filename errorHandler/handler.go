@@ -1,7 +1,6 @@
 package errorHandler
 
 import "fmt"
-// selam
 
 func GetErrors(value string, errorId int) string {
 	switch errorId {
