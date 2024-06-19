@@ -38,6 +38,7 @@ func (g *Goarg) SetTitle(title string) {
 
 // Sets the Examples in the usage struct
 func (g *Goarg) SetExamples(examples []string) {
+	// Test
 	g.usage.Examples = examples
 }
 

@@ -326,14 +326,3 @@ func CheckOptionNameIsBeingUsedInModes(g *Goarg, args string) {
 	}
 
 }
-
-func findGlobalOptionCount(g *Goarg) int {
-	count := 0
-	for _, o := range g.options {
-		if o.Global {
-			count++
-		}
-	}
-
-	return count
-}
